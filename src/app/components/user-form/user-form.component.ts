@@ -45,7 +45,7 @@ export class UserFormComponent implements OnInit {
   }
 
   signup() {
-    this.firebaseService.emailSignUp(this.userForm.value['email'], this.userForm.value['password']);
+    //this.firebaseService.emailSignUp(this.userForm.value['email'], this.userForm.value['password']);
   }
 
   login() {

@@ -8,14 +8,8 @@ import { NotifyService } from './notify.service';
 
 import { Observable } from 'rxjs/Observable';
 import { switchMap } from 'rxjs/operators';
+import { User } from '../models/user';
 
-
-interface User {
-  uid: string;
-  email?: string | null;
-  photoURL?: string;
-  displayName?: string;
-}
 
 
 @Injectable()
@@ -84,9 +78,11 @@ export class FirebaseService {
   }
 
   //// Email/Password Auth ////
-  emailSignUp(email: string, password: string) {
+  emailSignUp(firstname: string, lastname: string, email: string, password: string) {
     return this.afAuth.auth.createUserWithEmailAndPassword(email, password)
       .then((user) => {
+        user.firstname = firstname;
+        user.lastname = lastname;
         this.notify.update('Welcome to Firestarter!!!', 'success');
         return this.updateUserData(user); // if using firestore
       })
@@ -130,9 +126,9 @@ export class FirebaseService {
 
     const data: User = {
       uid: user.uid,
+      firstname: user.firstname || 'N/A',
+      lastname: user.lastname || 'N/A',
       email: user.email || null,
-      displayName: user.displayName || 'nameless user',
-      photoURL: user.photoURL || 'https://goo.gl/Fz9nrQ',
     };
     return userRef.set(data);
   }

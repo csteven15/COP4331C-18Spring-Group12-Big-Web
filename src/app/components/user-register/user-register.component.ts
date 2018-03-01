@@ -50,12 +50,14 @@ export class UserRegisterComponent implements OnInit {
 
   registerUser() {
     // users
-    this.firebaseService.emailSignUp(this.userForm.value['email'], this.userForm.value['password']);
+    this.firebaseService.emailSignUp(this.userForm.value['firstname'], this.userForm.value['lastname'], this.userForm.value['email'], this.userForm.value['password']);
     this.router.navigate(['/user-login']);
   }
 
   buildForm() {
     this.userForm = this.fb.group({
+      'firstname': ['', []],
+      'lastname': ['', []],
       'email': ['', [
         Validators.required,
         Validators.email,
