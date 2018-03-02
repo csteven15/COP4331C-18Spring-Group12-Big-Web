@@ -3,7 +3,6 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
 import { FirebaseService } from '../../services/firebase.service';
-import { User } from '../../models/user';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';

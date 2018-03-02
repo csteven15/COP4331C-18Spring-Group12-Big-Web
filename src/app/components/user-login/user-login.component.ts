@@ -50,8 +50,8 @@ export class UserLoginComponent implements OnInit {
 
   loginUser() {
     // users
-    this.firebaseService.emailLogin(this.userForm.value['email'], this.userForm.value['password']);
-    this.router.navigate(['/']);
+    this.firebaseService.emailLogin(this.userForm.value['email'], this.userForm.value['password'])
+    .then(() => this.afterSignIn());
   }
 
   buildForm() {
@@ -92,6 +92,10 @@ export class UserLoginComponent implements OnInit {
         }
       }
     }
+  }
+
+  private afterSignIn() {
+    this.router.navigate(['/user-profile']);
   }
 
 }

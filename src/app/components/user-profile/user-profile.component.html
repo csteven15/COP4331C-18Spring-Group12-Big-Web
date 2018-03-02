@@ -1,0 +1,89 @@
+<br><br><br><br><br>
+<div class="container">
+<div *ngIf="firebaseService.user | async; then authenticated else guest">
+        <!-- template will replace this div -->
+</div>
+
+
+<!-- User NOT logged in -->
+<ng-template #guest>
+    <h3>Howdy, GUEST</h3>
+    <p>Login to get started...</p>
+
+    <!-- <button (click)="firebaseService.googleLogin()">
+        <i class="fa fa-google"></i> Connect Google
+    </button> -->
+
+</ng-template>
+
+
+<!-- User logged in -->
+<ng-template #authenticated>
+    <div *ngIf="firebaseService.user | async as user">
+        <h3>Welcome, {{ user.firstname }} {{user.lastname}}</h3>
+        <p>UID: {{ user.uid }}</p>
+        <button class="btn btn-primary" (click)="firebaseService.signOut()" >Logout</button>
+
+    </div>
+</ng-template>
+</div>
+<br>
+
+
+<div class="container">
+  <form [formGroup]="eventForm" (ngSubmit)="registerEvent()">
+
+    <h3>Coordinates</h3>
+    <div class="form-group">
+      <label for="name">Event Name</label>
+      <br>
+      <input type="name" id="name" class="input" formControlName="name">
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <br>
+      <input type="description" id="description" class="input" formControlName="description" required>
+    </div>
+    <div class="form-group">
+      <label for="longitude">Longitude</label>
+      <br>
+      <input type="longitude" id="longitude" class="input" formControlName="longitude">
+    </div>
+
+    <div class="form-group">
+      <label for="latitude">Latitude</label>
+      <br>
+      <input type="latitude" id="latitude" class="input" formControlName="latitude">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Event</button>
+
+  </form>
+</div>
+
+
+
+
+
+<br><br><br>
+
+<div class="container">
+  <div *ngIf="events?.length > 0;else noEvents">
+    <div *ngFor="let event of events" class="collection">
+      <div class="card" style="width: 20rem;">
+        <div class="card-block" style="padding: 30px;">
+          <h5 class="card-title"><strong>Event Name: {{event.name}} </strong></h5>
+          <p>EID: {{event.eid}}</p>
+          <p>Description: {{event.description}}</p>
+          <p>Longitude: {{event.longitude}}</p>
+          <p>Latitude: {{event.latitude}}</p>
+        </div>
+      </div>
+      <br>
+    </div>
+  </div>
+
+  <ng-template #noItems>
+    <hr>
+    <h5>There are no items to list</h5>
+  </ng-template>
+</div>

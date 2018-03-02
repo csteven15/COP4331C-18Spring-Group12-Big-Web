@@ -3,19 +3,26 @@ import { Router } from '@angular/router';
 
 import * as firebase from 'firebase/app';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFirestore, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { NotifyService } from './notify.service';
 
 import { Observable } from 'rxjs/Observable';
 import { switchMap } from 'rxjs/operators';
-import { User } from '../models/user';
+import { map } from 'rxjs/operators';
 
+import { User } from '../models/user';
+import { Event } from '../models/event';
 
 
 @Injectable()
 export class FirebaseService {
 
   user: Observable<User | null>;
+  // userCollection: AngularFirestoreCollection<User>;
+
+  eventsCollection: AngularFirestoreCollection<Event>;
+  events: Observable<Event[]>;
+  eventDocument: AngularFirestoreDocument<Event>;
 
   constructor(private afAuth: AngularFireAuth,
               private afs: AngularFirestore,
@@ -30,6 +37,30 @@ export class FirebaseService {
           return Observable.of(null);
         }
       });
+
+      // this.eventsCollection = this.afs.collection('events');
+      //
+      // this.events = this.eventsCollection.snapshotChanges().map(changes => {
+      //   return changes.map(a => {
+      //     const data = a.payload.doc.data() as Event;
+      //     data.eid = a.payload.doc.id;
+      //     return data;
+      //   });
+      // });
+
+
+    this.eventsCollection = this.afs.collection('events');
+
+    this.events = this.eventsCollection.snapshotChanges().map(changes => {
+      return changes.map(a => {
+        const data = a.payload.doc.data() as Event;
+        data.eid = a.payload.doc.id;
+        return data;
+      });
+    });
+
+
+
   }
 
 
@@ -123,14 +154,47 @@ export class FirebaseService {
   private updateUserData(user: User) {
 
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
-
+    if (user.firstname == '') {
+      user.firstname = 'N/A';
+    }
+    if (user.lastname == '') {
+      user.lastname = 'N/A';
+    }
     const data: User = {
       uid: user.uid,
-      firstname: user.firstname || 'N/A',
-      lastname: user.lastname || 'N/A',
+      firstname: user.firstname,
+      lastname: user.lastname,
       email: user.email || null,
     };
     return userRef.set(data);
   }
+
+  // // Get user data from firestore
+  getUser() {
+    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.user}`);
+
+    console.log(userRef);
+  }
+
+  getEvents(){
+    const eventsRef: AngularFirestoreDocument<Event> = this.afs.doc(`events/${this.events}`);
+    console.log(eventsRef);
+    return this.events;
+  }
+
+  addEvent(event: Event){
+    this.eventsCollection.add(event);
+  }
+
+  deleteEvent(event: Event){
+    this.eventDocument = this.afs.doc(`events/${event.eid}`);
+    this.eventDocument.delete();
+  }
+
+  updateEvent(event: Event){
+    this.eventDocument = this.afs.doc(`items/${event.eid}`);
+    this.eventDocument.update(event);
+  }
+
 
 }

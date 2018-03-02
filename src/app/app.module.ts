@@ -20,14 +20,17 @@ import { UserFormComponent } from './components/user-form/user-form.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { FlashMessagesModule } from 'angular2-flash-messages';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { UserDashboardComponent } from './components/user-dashboard/user-dashboard.component';
 
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'user-register', component: UserRegisterComponent},
   {path: 'user-login', component: UserLoginComponent},
-  {path: 'user-form', component: UserFormComponent}
-
+  {path: 'user-form', component: UserFormComponent},
+  {path: 'user-profile', component: UserProfileComponent},
+  {path: 'user-dashboard', component: UserDashboardComponent}
 ]
 
 @NgModule({
@@ -38,7 +41,9 @@ const appRoutes: Routes = [
     MapsComponent,
     UserRegisterComponent,
     UserLoginComponent,
-    UserFormComponent
+    UserFormComponent,
+    UserProfileComponent,
+    UserDashboardComponent
   ],
   imports: [
     BrowserModule,
