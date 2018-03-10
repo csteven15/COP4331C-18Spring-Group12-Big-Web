@@ -4,6 +4,7 @@ import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
 import { FirebaseService } from '../../services/firebase.service';
 import { Event } from '../../models/event';
+import { User } from '../../models/user';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -26,6 +27,8 @@ export class UserProfileComponent implements OnInit {
 
   eventForm: FormGroup;
 
+  user: any;
+
   constructor(
     private firebaseService: FirebaseService,
     private fb: FormBuilder,
@@ -38,6 +41,12 @@ export class UserProfileComponent implements OnInit {
       console.log(events);
       this.events = events;
     });
+
+    this.user = this.firebaseService.getUser().subscribe(user => {
+      console.log(user);
+      this.user = user;
+    });
+    console.log(this.user);
 
   }
 

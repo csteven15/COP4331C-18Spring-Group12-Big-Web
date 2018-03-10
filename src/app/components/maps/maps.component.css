@@ -1,4 +1,7 @@
-agm-map {
-  width: 100vw;
-  height: 100vh;
+#mapid {
+  height:92vh;
+  width:100vw;
+  overflow:hidden;
+  position:fixed;
+  top: 50px;
 }

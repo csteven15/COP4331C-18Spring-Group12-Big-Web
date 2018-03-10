@@ -171,9 +171,7 @@ export class FirebaseService {
 
   // // Get user data from firestore
   getUser() {
-    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${this.user}`);
-
-    console.log(userRef);
+    return this.user;
   }
 
   getEvents(){
