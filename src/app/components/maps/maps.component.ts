@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
 import { MapService } from '../../services/map.service';
+import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
+import { User } from '../../models/user';
+import { Event } from '../../models/event';
+import { FirebaseService } from '../../services/firebase.service';
 
 
 @Component({
@@ -15,34 +19,57 @@ export class MapsComponent implements OnInit {
   lng: number = -81.2001;
   zoom: number = 15;
 
+  user: any;
 
 
   map: mapboxgl.Map;
   style = 'mapbox://styles/mapbox/outdoors-v9';
   message = 'Hello World!';
+  center: [-81.20031,28.60125];
+
 
   // data
   source: any;
   markers: any;
 
-  constructor(private mapService: MapService) {
+  events: Event[];
+  event: Event = {
+    eid: '',
+    uid: '',
+    name: '',
+    description: '',
+    longitude: '',
+    latitude: ''
+  }
+
+  constructor(
+    private mapService: MapService,
+    private firebaseService: FirebaseService) {
   }
 
   ngOnInit() {
     this.initializeMap()
+    this.user = this.firebaseService.getUser().subscribe(user => {
+      // console.log(user);
+      this.user = user;
+    });
+    this.firebaseService.getEvents().subscribe(events => {
+      console.log(events);
+      this.events = events;
+    });
   }
 
   private initializeMap() {
     /// locate the user
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
-        this.map.flyTo({
-          center: [this.lng, this.lat]
-        })
-      });
-    }
+    // if (navigator.geolocation) {
+    //   navigator.geolocation.getCurrentPosition(position => {
+    //     this.lat = position.coords.latitude;
+    //     this.lng = position.coords.longitude;
+    //     this.map.flyTo({
+    //       center: [this.lng, this.lat]
+    //     })
+    //   });
+    // }
 
     this.buildMap()
 
@@ -65,50 +92,29 @@ export class MapsComponent implements OnInit {
     //// Add Marker on Click
     this.map.on('click', (event) => {
       const coordinates = [event.lngLat.lng, event.lngLat.lat]
-      //const newMarker   = new GeoJson(coordinates, { message: this.message })
-      //this.mapService.createMarker(newMarker)
+      console.log(coordinates);
+
+      const newMarker: Event = {
+        uid: this.user.uid,
+        name: '',
+        description: '',
+        longitude: event.lngLat.lng,
+        latitude: event.lngLat.lat
+      }
+      this.mapService.createMarker(newMarker)
     })
 
 
     /// Add realtime firebase data on map load
     this.map.on('load', (event) => {
-
-      /// register source
-      // this.map.addSource('firebase', {
-      //    type: 'geojson',
-      //    data: {
-      //      type: 'FeatureCollection',
-      //      features: []
-      //    }
-      // });
-      //
-      // /// get source
-      // this.source = this.map.getSource('firebase')
-      //
-      // /// subscribe to realtime database and set data source
-      // this.markers.subscribe(markers => {
-      //     let data = new FeatureCollection(markers)
-      //     this.source.setData(data)
-      // })
-
-      /// create map layers with realtime data
-      this.map.addLayer({
-        id: 'firebase',
-        source: 'firebase',
-        type: 'symbol',
-        layout: {
-          'text-field': '{message}',
-          'text-size': 24,
-          'text-transform': 'uppercase',
-          'icon-image': 'rocket-15',
-          'text-offset': [0, 1.5]
-        },
-        paint: {
-          'text-color': '#f16624',
-          'text-halo-color': '#fff',
-          'text-halo-width': 2
-        }
-      })
+    console.log(this.events.length);
+    for (var i = 0; i < this.events.length; i++) {
+      var lng = parseFloat(this.events[i].longitude)
+      var lat = parseFloat(this.events[i].latitude)
+      var marker = new mapboxgl.Marker()
+        .setLngLat([lng, lat])
+        .addTo(this.map);
+    }
 
     })
 

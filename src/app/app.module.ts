@@ -1,30 +1,40 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { AngularFireModule } from 'angularfire2';
 import { environment } from '../environments/environment';
+
+// Angular
+import { HttpClientModule } from '@angular/common/http';
+import { HttpModule } from '@angular/http';
+import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+
+// Firebase
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AgmCoreModule } from '@agm/core';
+import { AngularFireModule } from 'angularfire2';
+
+// Modules
+import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
+import { FlashMessagesModule } from 'angular2-flash-messages';
+
+
+// Components
 import { AppComponent } from './app.component';
 import { NavigationComponent } from './components/navigation/navigation.component';
 import { HomeComponent } from './components/home/home.component';
-import { RouterModule, Routes } from '@angular/router';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { UserDashboardComponent } from './components/user-dashboard/user-dashboard.component';
+
+import { UserFormComponent } from './components/user-form/user-form.component';
 import { MapsComponent } from './components/maps/maps.component';
 import { UserRegisterComponent } from './components/user-register/user-register.component';
 import { UserLoginComponent } from './components/user-login/user-login.component';
+
+// Services
+import { MapService } from './services/map.service';
 import { FirebaseService } from './services/firebase.service';
 import { NotifyService } from './services/notify.service';
-import { UserFormComponent } from './components/user-form/user-form.component';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpModule } from '@angular/http';
-import { FlashMessagesModule } from 'angular2-flash-messages';
-import { UserProfileComponent } from './components/user-profile/user-profile.component';
-import { UserDashboardComponent } from './components/user-dashboard/user-dashboard.component';
-import { MapService } from './services/map.service';
-
-
 
 const appRoutes: Routes = [
   {path: '', component: HomeComponent},
@@ -55,10 +65,10 @@ const appRoutes: Routes = [
     AngularFireAuthModule, // imports firebase/auth, only needed for auth features,
     AngularFireStorageModule, // imports firebase/storage only needed for storage features
     RouterModule.forRoot(appRoutes),
-    AgmCoreModule.forRoot({
-      apiKey: 'AIzaSyDuu4TRrEA0mMTH3pf4tlbylX0JnpOFVqI'
-    }),
-    FlashMessagesModule.forRoot()
+    FlashMessagesModule.forRoot(),
+    NgxMapboxGLModule.forRoot({
+      accessToken: 'pk.eyJ1IjoiY3N0ZXZlbjE1IiwiYSI6ImNqZW01enFuejBndnIyeHFtMjE2eGJjdWUifQ.ijNpFhnB7y8tdIRqT4fWYw' // accessToken can also be set per map (accessToken input of mgl-map)
+    })
   ],
   providers: [FirebaseService, NotifyService, MapService],
   bootstrap: [AppComponent]
