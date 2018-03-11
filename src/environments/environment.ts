@@ -12,5 +12,8 @@ export const environment = {
     projectId: "cop4331c",
     storageBucket: "cop4331c.appspot.com",
     messagingSenderId: "200522304857"
+  },
+  mapbox: {
+    accessToken: 'pk.eyJ1IjoiY3N0ZXZlbjE1IiwiYSI6ImNqZW01enFuejBndnIyeHFtMjE2eGJjdWUifQ.ijNpFhnB7y8tdIRqT4fWYw'
   }
 };

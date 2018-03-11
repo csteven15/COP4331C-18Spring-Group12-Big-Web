@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import * as L from 'leaflet';
-import 'leaflet-routing-machine'
+import * as mapboxgl from 'mapbox-gl';
+import { MapService } from '../../services/map.service';
+
 
 @Component({
   selector: 'app-maps',
@@ -14,61 +15,103 @@ export class MapsComponent implements OnInit {
   lng: number = -81.2001;
   zoom: number = 15;
 
-  constructor() { }
+
+
+  map: mapboxgl.Map;
+  style = 'mapbox://styles/mapbox/outdoors-v9';
+  message = 'Hello World!';
+
+  // data
+  source: any;
+  markers: any;
+
+  constructor(private mapService: MapService) {
+  }
 
   ngOnInit() {
+    this.initializeMap()
+  }
 
-      var UCFcoords = L.latLng(28.6014, -81.2001);
-      var topLeft = L.latLng(28.6116, -81.2073);
-      var bottomRight = L.latLng(28.5912, -81.1929);
-      var bounds = L.latLngBounds(topLeft, bottomRight);
-
-      var mymap = L.map('mapid', {
-        center: UCFcoords,
-        zoom: 16,
-      //  minZoom: 16,
-      //  maxBounds: bounds
+  private initializeMap() {
+    /// locate the user
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        this.lat = position.coords.latitude;
+        this.lng = position.coords.longitude;
+        this.map.flyTo({
+          center: [this.lng, this.lat]
+        })
       });
-
-     L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoibm90YWthbmUiLCJhIjoiY2plNHdqeXphMnBjbzJ4bW9kNDJxZHk2eSJ9.pViraf7NrFYgzmnqTd_vgQ', {
-              attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-          }).addTo(mymap);
-
-      var prevDirections = 0;
-      var directions;
-      var userloc;
-
-      mymap.locate({
-          }).on("locationfound", e => {
-              userloc = e.latlng;
-              new L.marker(userloc).addTo(mymap);
-          });
-
-      mymap.on('click', function(ev){
-        if(prevDirections != 0) {
-            mymap.removeControl(directions);
-          }
-
-            var coordDest = mymap.mouseEventToLatLng(ev.originalEvent);
-
-            console.log(coordDest.lat + ', ' + coordDest.lng);
-
-            let options = { profile: 'mapbox/walking' }
-            directions = L.Routing.control
-            ({
-                waypoints: [
-                    L.latLng(userloc),
-                    L.latLng(coordDest)
-                              ],
-                units: 'imperial',
-                fitSelectedRoutes: true,
-                routeWhileDragging:true,
-                show: true,
-                router: L.Routing.mapbox('pk.eyJ1Ijoibm90YWthbmUiLCJhIjoiY2plNHdqeXphMnBjbzJ4bW9kNDJxZHk2eSJ9.pViraf7NrFYgzmnqTd_vgQ', options)
-            }).addTo(mymap);
-
-            prevDirections  = 1;
-          });
-
     }
+
+    this.buildMap()
+
+  }
+
+
+  buildMap() {
+    this.map = new mapboxgl.Map({
+      container: 'map',
+      style: this.style,
+      zoom: 15,
+      center: [this.lng, this.lat]
+    });
+
+
+    /// Add map controls
+    this.map.addControl(new mapboxgl.NavigationControl());
+
+
+    //// Add Marker on Click
+    this.map.on('click', (event) => {
+      const coordinates = [event.lngLat.lng, event.lngLat.lat]
+      //const newMarker   = new GeoJson(coordinates, { message: this.message })
+      //this.mapService.createMarker(newMarker)
+    })
+
+
+    /// Add realtime firebase data on map load
+    this.map.on('load', (event) => {
+
+      /// register source
+      // this.map.addSource('firebase', {
+      //    type: 'geojson',
+      //    data: {
+      //      type: 'FeatureCollection',
+      //      features: []
+      //    }
+      // });
+      //
+      // /// get source
+      // this.source = this.map.getSource('firebase')
+      //
+      // /// subscribe to realtime database and set data source
+      // this.markers.subscribe(markers => {
+      //     let data = new FeatureCollection(markers)
+      //     this.source.setData(data)
+      // })
+
+      /// create map layers with realtime data
+      this.map.addLayer({
+        id: 'firebase',
+        source: 'firebase',
+        type: 'symbol',
+        layout: {
+          'text-field': '{message}',
+          'text-size': 24,
+          'text-transform': 'uppercase',
+          'icon-image': 'rocket-15',
+          'text-offset': [0, 1.5]
+        },
+        paint: {
+          'text-color': '#f16624',
+          'text-halo-color': '#fff',
+          'text-halo-width': 2
+        }
+      })
+
+    })
+
+  }
+
 }

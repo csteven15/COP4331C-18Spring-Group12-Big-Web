@@ -22,6 +22,8 @@ import { HttpModule } from '@angular/http';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UserDashboardComponent } from './components/user-dashboard/user-dashboard.component';
+import { MapService } from './services/map.service';
+
 
 
 const appRoutes: Routes = [
@@ -58,7 +60,7 @@ const appRoutes: Routes = [
     }),
     FlashMessagesModule.forRoot()
   ],
-  providers: [FirebaseService, NotifyService],
+  providers: [FirebaseService, NotifyService, MapService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

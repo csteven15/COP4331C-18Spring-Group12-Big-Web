@@ -1,7 +1,7 @@
-#mapid {
+#map {
   height:92vh;
   width:100vw;
   overflow:hidden;
-  position:fixed;
+  /* position:fixed; */
   top: 50px;
 }
