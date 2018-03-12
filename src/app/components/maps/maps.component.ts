@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine'
+import { FirebaseService } from '../../services/firebase.service';
+import { Observable } from 'rxjs/Observable';
+import { Event } from '../../models/event';
+import { User } from '../../models/user';
 
 @Component({
   selector: 'app-maps',
@@ -13,8 +17,16 @@ export class MapsComponent implements OnInit {
   lat: number = 28.6024;
   lng: number = -81.2001;
   zoom: number = 15;
+  events: Event[];
+  event: Event = {
+    name: '',
+    description: '',
+    longitude: '',
+    latitude: ''
+  }
+  user: any;
 
-  constructor() { }
+  constructor(private firebaseService: FirebaseService) { }
 
   ngOnInit() {
 
@@ -37,6 +49,13 @@ export class MapsComponent implements OnInit {
       var prevDirections = 0;
       var directions;
       var userloc;
+      this.firebaseService.getEvents().subscribe(events => {
+        for (var i = 0; i < events.length; i++) {
+          var lng = parseFloat(events[i].longitude);
+          var lat = parseFloat(events[i].latitude);
+          var marker = L.marker([lng, lat]).addTo(mymap);
+        }
+      });
 
       mymap.locate({
           }).on("locationfound", e => {
