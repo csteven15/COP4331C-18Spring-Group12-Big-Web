@@ -1,10 +1,26 @@
 <div class="map" id="map"></div>
-<br><br><br><br>
-<input type="text" [(ngModel)]="message" placeholder="your message...">
-<h1>Markers</h1>
-<div *ngFor="let marker of markers | async">
-  <button (click)="flyTo(marker)">{{ marker.properties.message }}</button>
-  <button (click)="removeMarker(marker)">Delete</button>
+<br><br><br>
+<nav id="menu"></nav>
+
+<hr>
+<div class="container" *ngIf="events?.length > 0">
+  <h1>List of Events</h1>
+  <div class="card-deck">
+    <div *ngFor="let event of events">
+      <div class="card mb-4" style="width: 20em; padding: 10px;">
+        <div class="card-block">
+          <h5 class="card-title">Event Name: {{event.name}} </h5>
+          <p>EID: {{event.eid}}</p>
+          <p>UID: {{event.uid}}</p>
+          <p>Description: {{event.description}}</p>
+          <p>Longitude: {{event.b-nlongitude}}</p>
+          <p>Latitude: {{event.latb-bb-nnitude}}</p>
+          <button class="btn btn-primary" (click)="flyTo(event)">Fly Here!</button>
+          <button class="btn btn-primary" (click)="removeMarker(event)">Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <!-- <mgl-map [style]="'mapbox://styles/mapbox/streets-v9'">
   <mgl-control mglGeolocate [positionOptions]="{
