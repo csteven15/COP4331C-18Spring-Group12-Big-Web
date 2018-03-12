@@ -99,19 +99,19 @@ export class MapsComponent implements OnInit {
 
 
     // //// Add Marker on Click
-    // this.map.on('click', (event) => {
-    //   const coordinates = [event.lngLat.lng, event.lngLat.lat]
-    //   console.log(coordinates);
-    //
-    //   const newMarker: Event = {
-    //     uid: this.user.uid,
-    //     name: '',
-    //     description: '',
-    //     longitude: event.lngLat.lng,
-    //     latitude: event.lngLat.lat
-    //   }
-    //   this.mapService.createMarker(newMarker)
-    // });
+    this.map.on('click', (event) => {
+      const coordinates = [event.lngLat.lng, event.lngLat.lat]
+      console.log(coordinates);
+
+      const newMarker: Event = {
+        uid: this.user.uid,
+        name: '',
+        description: '',
+        longitude: event.lngLat.lng,
+        latitude: event.lngLat.lat
+      }
+      this.mapService.createMarker(newMarker)
+    });
 
 
     /// Add realtime firebase data on map load
@@ -123,6 +123,8 @@ export class MapsComponent implements OnInit {
             .setText(events[i].eid);
           var lng = parseFloat(events[i].longitude)
           var lat = parseFloat(events[i].latitude)
+          console.log(lng);
+          console.log(lat);
           var marker = new mapboxgl.Marker()
             .setLngLat([lng, lat])
             .setPopup(popup)
