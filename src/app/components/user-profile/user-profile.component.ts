@@ -58,6 +58,7 @@ export class UserProfileComponent implements OnInit {
   registerEvent() {
     // users
     const data: Event = {
+      uid: this.user.uid,
       name: this.eventForm.value['name'],
       description: this.eventForm.value['description'],
       longitude: this.eventForm.value['longitude'],

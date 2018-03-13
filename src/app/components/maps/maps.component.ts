@@ -73,15 +73,6 @@ export class MapsComponent implements OnInit {
     //   new L.marker(userloc).addTo(mymap);
     // });
 
-
-    // this.firebaseService.getEvents().subscribe(events => {
-    //    for (var i = 0; i < events.length; i++) {
-    //      var lng = parseFloat(events[i].longitude);
-    //      var lat = parseFloat(events[i].latitude);
-    //      var marker = L.marker({lng, lat}).addTo(mymap);
-    //    }
-    //  });
-
     this.map.on('click', click => {
 
       var coordDest = mymap.mouseEventToLatLng(click.originalEvent);
@@ -97,7 +88,7 @@ export class MapsComponent implements OnInit {
 
       // add markers
 
-      var marker = L.marker(coordDest).addTo(mymap);
+      // var marker = L.marker(coordDest).addTo(mymap);
       // console.log(coordDest.lat + ', ' + coordDest.lng);
 
     });
@@ -112,12 +103,20 @@ export class MapsComponent implements OnInit {
         var lng = parseFloat(events[i].longitude);
         var lat = parseFloat(events[i].latitude);
         var marker = new L.marker({ lng, lat })
-          .bindPopup(
-            '<p>EID: ' + events[i].eid + '</p><p>UID: ' + events[i].uid + '</p><p>Description: ' + events[i].description + '</p><p>Longitude: ' + events[i].longitude + '</p><p>Latitude: '  + events[i].latitude + '</p>'
-          )
+          .bindPopup('<p class="wordwrap"><strong>' + events[i].name + '</strong></p><p class="wordwrap">' + events[i].description + '</p>', {maxWidth: 250})
           .addTo(this.map);
       }
     });
+  }
+
+  flyTo(data: Event) {
+    console.log(data.longitude)
+    console.log(data.latitude)
+    this.lng = parseFloat(data.longitude)
+    this.lat = parseFloat(data.latitude)
+    var latlng = L.latLng(this.lng, this.lat)
+    console.log(latlng)
+    this.map.flyTo(latlng, 12)
   }
 
 

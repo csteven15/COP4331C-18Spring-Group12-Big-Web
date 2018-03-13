@@ -175,7 +175,6 @@ export class FirebaseService {
   }
 
   getEvents(){
-    // const eventsRef: AngularFirestoreDocument<Event> = this.afs.doc(`events/${this.events}`);
     return this.events;
   }
 
@@ -189,7 +188,7 @@ export class FirebaseService {
   }
 
   updateEvent(event: Event){
-    this.eventDocument = this.afs.doc(`items/${event.eid}`);
+    this.eventDocument = this.afs.doc(`events/${event.eid}`);
     this.eventDocument.update(event);
   }
 
