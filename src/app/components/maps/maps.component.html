@@ -1,13 +1,9 @@
-<div class="map" id="map"></div>
-<br><br><br>
-<nav id="menu"></nav>
-
-<hr>
-<div class="container" *ngIf="events?.length > 0">
-  <h1>List of Events</h1>
-  <div class="card-deck">
+<div class="row">
+  <div class="col-4" *ngIf="events?.length > 0">
+    <br><br><br><br>
+    <h1>List of Events</h1>
     <div *ngFor="let event of events">
-      <div class="card mb-4" style="width: 20em; padding: 10px;">
+      <div class="card mb-4" style="padding: 10px;">
         <div class="card-block">
           <h5 class="card-title">Event Name: {{event.name}} </h5>
           <p>EID: {{event.eid}}</p>
@@ -16,12 +12,16 @@
           <p>Longitude: {{event.longitude}}</p>
           <p>Latitude: {{event.latitude}}</p>
           <button class="btn btn-primary" (click)="flyTo(event)">Fly Here!</button>
-          <button class="btn btn-primary" (click)="removeMarker(event)">Delete</button>
+          <button class="btn btn-primary" (click)="deleteEvent(event)">Delete</button>
         </div>
       </div>
     </div>
   </div>
+  <div class="col-8 map" id="map"></div>
+
 </div>
+<br><br><br><br><br><br>
+
 <!-- <mgl-map [style]="'mapbox://styles/mapbox/streets-v9'">
   <mgl-control mglGeolocate [positionOptions]="{
         enableHighAccuracy: true

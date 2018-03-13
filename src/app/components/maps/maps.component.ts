@@ -1,7 +1,5 @@
 import { Component, OnInit, Directive, Renderer2, ElementRef } from '@angular/core';
 import * as mapboxgl from 'mapbox-gl';
-import { MapService } from '../../services/map.service';
-import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
 import { User } from '../../models/user';
 import { Event } from '../../models/event';
 import { FirebaseService } from '../../services/firebase.service';
@@ -51,7 +49,6 @@ export class MapsComponent implements OnInit {
   constructor(
     private renderer: Renderer2,
     private el: ElementRef,
-    private mapService: MapService,
     private firebaseService: FirebaseService) {
   }
 
@@ -95,23 +92,23 @@ export class MapsComponent implements OnInit {
 
 
     /// Add map controls
-    this.map.addControl(new mapboxgl.NavigationControl());
+    // this.map.addControl(new mapboxgl.NavigationControl());
 
 
     // //// Add Marker on Click
-    this.map.on('click', (event) => {
-      const coordinates = [event.lngLat.lng, event.lngLat.lat]
-      console.log(coordinates);
-
-      const newMarker: Event = {
-        uid: this.user.uid,
-        name: '',
-        description: '',
-        longitude: event.lngLat.lng,
-        latitude: event.lngLat.lat
-      }
-      this.mapService.createMarker(newMarker)
-    });
+    // this.map.on('click', (event) => {
+    //   const coordinates = [event.lngLat.lng, event.lngLat.lat]
+    //   console.log(coordinates);
+    //
+    //   const newMarker: Event = {
+    //     uid: this.user.uid,
+    //     name: '',
+    //     description: '',
+    //     longitude: event.lngLat.lng,
+    //     latitude: event.lngLat.lat
+    //   }
+    //   this.firebaseService.addEvent(newMarker)
+    // });
 
 
     /// Add realtime firebase data on map load
@@ -120,11 +117,9 @@ export class MapsComponent implements OnInit {
         this.events = events;
         for (var i = 0; i < events.length; i++) {
           var popup = new mapboxgl.Popup()
-            .setText(events[i].eid);
+            .setHTML('<p class="wordwrap"><strong>' + events[i].name + '</strong></p><p class="wordwrap">' + events[i].description + '</p>');
           var lng = parseFloat(events[i].longitude)
           var lat = parseFloat(events[i].latitude)
-          console.log(lng);
-          console.log(lat);
           var marker = new mapboxgl.Marker()
             .setLngLat([lng, lat])
             .setPopup(popup)
@@ -142,6 +137,10 @@ export class MapsComponent implements OnInit {
     this.map.flyTo({
       center: [this.lng, this.lat]
     })
+  }
+
+  deleteEvent(data: Event) {
+    this.firebaseService.deleteEvent(data);
   }
 
 }

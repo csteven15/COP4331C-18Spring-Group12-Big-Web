@@ -1,9 +1,8 @@
 #map {
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
-  position: static;
-  top: 10em;
+  /* overflow: hidden; */
+  /* position: static; */
 }
 
 /* mgl-map {
@@ -50,4 +49,14 @@
 
 #menu a.active:hover {
   background: #3074a4;
+}
+
+.row {
+  width: 98%;
+  height: 100vh;
+  margin: auto;
+}
+
+.col-4 {
+  overflow-y: scroll;
 }

@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import * as mapboxgl from 'mapbox-gl';
+import { environment } from '../../environments/environment';
 
 import * as firebase from 'firebase/app';
 import { AngularFireAuth } from 'angularfire2/auth';
@@ -28,6 +30,9 @@ export class FirebaseService {
               private afs: AngularFirestore,
               private router: Router,
               private notify: NotifyService) {
+
+                Object.getOwnPropertyDescriptor(mapboxgl, "accessToken").set(environment.mapbox.accessToken);
+
 
     this.user = this.afAuth.authState
       .switchMap((user) => {
