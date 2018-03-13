@@ -67,11 +67,11 @@ export class MapsComponent implements OnInit {
     var directions;
     var userloc;
 
-    this.map.locate({
-    }).on("locationfound", e => {
-      userloc = e.latlng;
-      new L.marker(userloc).addTo(mymap);
-    });
+    // this.map.locate({
+    // }).on("locationfound", e => {
+    //   userloc = e.latlng;
+    //   new L.marker(userloc).addTo(mymap);
+    // });
 
 
     // this.firebaseService.getEvents().subscribe(events => {
@@ -96,7 +96,8 @@ export class MapsComponent implements OnInit {
       this.firebaseService.addEvent(newMarker);
 
       // add markers
-      // var marker = L.marker(coordDest).addTo(mymap);
+
+      var marker = L.marker(coordDest).addTo(mymap);
       // console.log(coordDest.lat + ', ' + coordDest.lng);
 
     });
@@ -110,7 +111,11 @@ export class MapsComponent implements OnInit {
         // console.log(events)
         var lng = parseFloat(events[i].longitude);
         var lat = parseFloat(events[i].latitude);
-        var marker = new L.marker({ lng, lat }).addTo(this.map);
+        var marker = new L.marker({ lng, lat })
+          .bindPopup(
+            '<p>EID: ' + events[i].eid + '</p><p>UID: ' + events[i].uid + '</p><p>Description: ' + events[i].description + '</p><p>Longitude: ' + events[i].longitude + '</p><p>Latitude: '  + events[i].latitude + '</p>'
+          )
+          .addTo(this.map);
       }
     });
   }

@@ -175,8 +175,7 @@ export class FirebaseService {
   }
 
   getEvents(){
-    const eventsRef: AngularFirestoreDocument<Event> = this.afs.doc(`events/${this.events}`);
-    console.log(eventsRef);
+    // const eventsRef: AngularFirestoreDocument<Event> = this.afs.doc(`events/${this.events}`);
     return this.events;
   }
 

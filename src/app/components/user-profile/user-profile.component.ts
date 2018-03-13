@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
 })
 export class UserProfileComponent implements OnInit {
 
-  events: Event[];
+  events: any;
   event: Event = {
     name: '',
     description: '',
@@ -37,16 +37,21 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
-    this.firebaseService.getEvents().subscribe(events => {
-      console.log(events);
-      this.events = events;
-    });
+
 
     this.user = this.firebaseService.getUser().subscribe(user => {
-      console.log(user);
       this.user = user;
+      this.events = this.firebaseService.getEvents().subscribe(events => {
+        let userEvents = new Array();
+        for (var i = 0; i < events.length; i++) {
+          if (events[i].uid == this.user.uid) {
+            userEvents.push(events[i]);
+          }
+        }
+        this.events = userEvents;
+      });
     });
-    console.log(this.user);
+
 
   }
 
