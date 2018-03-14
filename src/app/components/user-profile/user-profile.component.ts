@@ -65,7 +65,6 @@ export class UserProfileComponent implements OnInit {
       latitude: this.eventForm.value['latitude']
     };
     this.firebaseService.addEvent(data);
-    //this.firebaseService.getUser();
   }
 
   buildForm() {
@@ -75,7 +74,6 @@ export class UserProfileComponent implements OnInit {
       'longitude': ['', []],
       'latitude': ['', []]
     });
-
   }
 
 

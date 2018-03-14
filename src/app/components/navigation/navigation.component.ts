@@ -21,10 +21,6 @@ export class NavigationComponent implements OnInit {
   ngOnInit() {
   }
 
-  home() {
-    this.router.navigate([''];
-  }
-
   login() {
     this.afAuth.auth.signInWithPopup(new firebase.auth.EmailAuthProvider());
   }

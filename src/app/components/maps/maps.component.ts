@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Event } from '../../models/event';
 import { User } from '../../models/user';
 import { switchMap } from 'rxjs/operators';
-import { map } from 'rxjs/operators';
+import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-maps',
@@ -28,17 +28,34 @@ export class MapsComponent implements OnInit {
     longitude: '',
     latitude: ''
   }
+  eventForm: FormGroup;
+
+  mouselat: any;
+  mouselng: any;
   user;
   map;
 
-  constructor(private firebaseService: FirebaseService) { }
+  userEvents: any;
+
+  constructor(private fb: FormBuilder, private firebaseService: FirebaseService) { }
 
   ngOnInit() {
+    this.getMarkers();
     this.initializeMap();
     this.user = this.firebaseService.getUser().subscribe(user => {
-      // console.log(user);
       this.user = user;
+      this.userEvents = this.firebaseService.getEvents().subscribe(events => {
+        let userEvents = new Array();
+        for (var i = 0; i < events.length; i++) {
+          if (events[i].uid == this.user.uid) {
+            userEvents.push(events[i]);
+          }
+        }
+        this.userEvents = userEvents;
+      });
     });
+    this.buildForm();
+
   }
 
   private initializeMap() {
@@ -73,26 +90,45 @@ export class MapsComponent implements OnInit {
     //   new L.marker(userloc).addTo(mymap);
     // });
 
+
+
     this.map.on('click', click => {
+      this.getMarkers();
 
       var coordDest = mymap.mouseEventToLatLng(click.originalEvent);
-      const newMarker: Event = {
-        uid: this.user.uid,
-        name: '',
-        description: '',
-        longitude: coordDest.lng,
-        latitude: coordDest.lat
-      }
+      // const newMarker: Event = {
+      //   uid: this.user.uid,
+      //   name: this.eventForm.value['name'],
+      //   description: this.eventForm.value['description'],
+      //   longitude: coordDest.lng,
+      //   latitude: coordDest.lat
+      // }
+      this.mouselat = coordDest.lat;
+      this.mouselng = coordDest.lng;
+      this.eventForm.patchValue({
+        latitude: this.mouselat,
+        longitude: this.mouselng
+      })
 
-      this.firebaseService.addEvent(newMarker);
+      // this.firebaseService.addEvent(newMarker);
 
       // add markers
+      this.firebaseService.user.subscribe(user => {
+        if (user == null) {
+          console.log('no user');
+        } else {
+          var popup = L.popup()
+            .setLatLng(coordDest)
+            .setContent('<h6>You will be placing a marker here</h6>')
+            .openOn(mymap);
+        }
+      })
 
       // var marker = L.marker(coordDest).addTo(mymap);
       // console.log(coordDest.lat + ', ' + coordDest.lng);
+      this.getMarkers();
 
     });
-    this.getMarkers();
   }
 
   getMarkers() {
@@ -103,7 +139,7 @@ export class MapsComponent implements OnInit {
         var lng = parseFloat(events[i].longitude);
         var lat = parseFloat(events[i].latitude);
         var marker = new L.marker({ lng, lat })
-          .bindPopup('<p class="wordwrap"><strong>' + events[i].name + '</strong></p><p class="wordwrap">' + events[i].description + '</p>', {maxWidth: 250})
+          .bindPopup('<p class="wordwrap"><strong>' + events[i].name + '</strong></p><p class="wordwrap">' + events[i].description + '</p>', { maxWidth: 250 })
           .addTo(this.map);
       }
     });
@@ -114,9 +150,32 @@ export class MapsComponent implements OnInit {
     console.log(data.latitude)
     this.lng = parseFloat(data.longitude)
     this.lat = parseFloat(data.latitude)
-    var latlng = L.latLng(this.lng, this.lat)
+    var latlng = L.latLng(this.lat, this.lng)
     console.log(latlng)
-    this.map.flyTo(latlng, 12)
+    this.map.flyTo(latlng, 20)
+  }
+
+  registerEvent() {
+    // users
+    const data: Event = {
+      uid: this.user.uid,
+      name: this.eventForm.value['name'],
+      description: this.eventForm.value['description'],
+      longitude: this.mouselng,
+      latitude: this.mouselat
+    };
+    this.firebaseService.addEvent(data);
+    this.firebaseService.getEvents();
+    this.map.closePopup();
+  }
+
+  buildForm() {
+    this.eventForm = this.fb.group({
+      'name': ['', [Validators.required]],
+      'description': ['', [Validators.required]],
+      'latitude': ['', [Validators.required]],
+      'longitude': ['', [Validators.required]]
+    });
   }
 
 

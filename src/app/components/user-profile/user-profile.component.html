@@ -24,7 +24,6 @@
     <button class="btn btn-primary" (click)="firebaseService.signOut()">Logout</button>
     <hr>
     <form [formGroup]="eventForm" (ngSubmit)="registerEvent()">
-
       <h3>Coordinates</h3>
       <div class="form-group">
         <label for="name">Event Name</label>
@@ -41,14 +40,12 @@
         <br>
         <input type="longitude" id="longitude" class="input" formControlName="longitude">
       </div>
-
       <div class="form-group">
         <label for="latitude">Latitude</label>
         <br>
         <input type="latitude" id="latitude" class="input" formControlName="latitude">
       </div>
       <button type="submit" class="btn btn-primary">Add Event</button>
-
     </form>
   </div>
 </ng-template>
