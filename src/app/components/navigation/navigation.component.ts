@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
@@ -12,14 +12,17 @@ import { FirebaseService } from '../../services/firebase.service';
 })
 export class NavigationComponent implements OnInit {
 
+  @Input() isAuthenticated: boolean;
+  @Output() isAuthenticatedChange = new EventEmitter<boolean>();
+
   constructor(
     private router: Router,
     public afAuth: AngularFireAuth,
     private firebaseService: FirebaseService
-    ) { }
-
-  ngOnInit() {
+    ) { 
   }
+
+  ngOnInit() { }
 
   login() {
     this.afAuth.auth.signInWithPopup(new firebase.auth.EmailAuthProvider());

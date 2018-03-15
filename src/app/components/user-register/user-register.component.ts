@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
@@ -18,7 +18,8 @@ type FormErrors = {[u in UserFields]: string };
   styleUrls: ['./user-register.component.css']
 })
 export class UserRegisterComponent implements OnInit {
-
+  @Input() authenticationStatus: boolean;
+  @Output() authenticationStatusChange = new EventEmitter<boolean>();
   userForm: FormGroup;
   formErrors: FormErrors = {
     'email': '',
@@ -45,6 +46,12 @@ export class UserRegisterComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
+    this.firebaseService.getUser().subscribe(user => {
+      console.log(user);
+      this.authenticationStatus = (user == null) ? false : true;
+      this.authenticationStatusChange.emit(this.authenticationStatus);
+      console.log("register page authenticationStatus = " + this.authenticationStatus);
+    });
   }
 
   registerUser() {

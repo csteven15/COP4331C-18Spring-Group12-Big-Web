@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
@@ -19,7 +19,10 @@ type FormErrors = {[u in UserFields]: string };
   styleUrls: ['./user-login.component.css']
 })
 export class UserLoginComponent implements OnInit {
+  @Input() authenticationStatus: boolean;
+  @Output() authenticationStatusChange = new EventEmitter<boolean>();
 
+  user: any;
   userForm: FormGroup;
   formErrors: FormErrors = {
     'email': '',
@@ -42,14 +45,28 @@ export class UserLoginComponent implements OnInit {
     private firebaseService: FirebaseService,
     private fb: FormBuilder,
     private router: Router
-    ) {}
+    ) {
+  }
 
   ngOnInit() {
     this.buildForm();
+    if(this.firebaseService == null) { return; }
+
+    this.user = this.firebaseService.getUser().subscribe(user => {
+      this.user = user;
+      this.authenticationStatus = (this.user == null) ? false : true;
+      this.authenticationStatusChange.emit(this.authenticationStatus);
+      console.log("on user login page loaded authenticationStatus = " + this.authenticationStatus);
+    });
+
   }
 
   loginUser() {
-    // users
+    console.log("Before login authenticationStatus = " + this.authenticationStatus)
+    console.log("user-login login method called")
+    this.authenticationStatus = true;
+    console.log("After login authenticationStatus = " + this.authenticationStatus)
+    this.authenticationStatusChange.emit(this.authenticationStatus);
     this.firebaseService.emailLogin(this.userForm.value['email'], this.userForm.value['password'])
     .then(() => this.afterSignIn());
   }

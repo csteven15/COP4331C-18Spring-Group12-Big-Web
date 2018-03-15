@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
@@ -16,6 +16,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit {
+  @Input() authenticationStatus: boolean;
+  @Output() authenticationStatusChange = new EventEmitter<boolean>();
 
   events: Event[];
   event: Event = {
@@ -42,9 +44,12 @@ export class UserProfileComponent implements OnInit {
       this.events = events;
     });
 
-    this.user = this.firebaseService.getUser().subscribe(user => {
+    this.firebaseService.getUser().subscribe(user => {
       console.log(user);
       this.user = user;
+      this.authenticationStatus = (this.user == null) ? false : true;
+      this.authenticationStatusChange.emit(this.authenticationStatus);
+      console.log("on user profile page loaded authenticationStatus = " + this.authenticationStatus);
     });
     console.log(this.user);
 

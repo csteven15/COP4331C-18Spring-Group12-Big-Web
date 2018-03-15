@@ -1,4 +1,5 @@
-<br><br><br><br><br>
+<app-navigation [(isAuthenticated)]="authenticationStatus"></app-navigation>
+<br><br><br><br>
 <div class="container">
 <div *ngIf="firebaseService.user | async; then authenticated else guest">
         <!-- template will replace this div -->
