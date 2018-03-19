@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
@@ -16,6 +16,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./user-profile.component.css']
 })
 export class UserProfileComponent implements OnInit {
+  @Input() mapEvents: Event[];
+  @Output() parentEventsChange = new EventEmitter<Event[]>();
 
   events: any;
   event: Event = {
@@ -51,8 +53,12 @@ export class UserProfileComponent implements OnInit {
         this.events = userEvents;
       });
     });
+  }
 
-
+  mapEventsChange(updated_events: Event[]) { 
+    this.mapEvents = updated_events; 
+    console.log("Updated profile component events: ");
+    console.log(this.mapEvents);
   }
 
   registerEvent() {
@@ -62,9 +68,18 @@ export class UserProfileComponent implements OnInit {
       name: this.eventForm.value['name'],
       description: this.eventForm.value['description'],
       longitude: this.eventForm.value['longitude'],
-      latitude: this.eventForm.value['latitude']
+      latitude: this.eventForm.value['latitude'],
+      likes: 0,
+      dislikes: 0
     };
     this.firebaseService.addEvent(data);
+    // emit change
+    this.firebaseService.getEvents().subscribe(events => {
+      this.mapEvents = events;
+      this.parentEventsChange.emit(this.mapEvents);
+      console.log("profile component events after register = ");
+      console.log(this.mapEvents);
+    });
   }
 
   buildForm() {

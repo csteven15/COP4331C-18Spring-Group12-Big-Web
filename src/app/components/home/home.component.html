@@ -10,10 +10,5 @@
 </div>
 </div>
 -->
-<app-maps></app-maps>
-<br><br><br>
-<div class="container">
-  <p>
-    Home Page
-  </p>
-</div>
+<app-navigation [events]="events" (eventsChange)="eventsChange($event)"></app-navigation>
+<app-maps [mapEvents]="events" (parentEventsChange)="parentEventsChange($event)" (childEventsChange)="childEventsChange($event)"></app-maps>

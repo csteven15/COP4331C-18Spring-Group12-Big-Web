@@ -5,4 +5,6 @@ export interface Event{
   description?: string | null;
   longitude?: string | null;
   latitude?: string | null;
+  likes?: number;
+  dislikes?: number;
 }

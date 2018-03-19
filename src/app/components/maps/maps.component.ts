@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, Renderer, Input, Output, EventEmitter } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine'
 import { FirebaseService } from '../../services/firebase.service';
@@ -14,6 +14,9 @@ import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angula
   styleUrls: ['./maps.component.css']
 })
 export class MapsComponent implements OnInit {
+  @Input() mapEvents: Event[];
+  @Output() childEventsChange = new EventEmitter<Event[]>();
+
 
   // UCF coordinates
   lat: number = 28.6024;
@@ -37,11 +40,12 @@ export class MapsComponent implements OnInit {
 
   userEvents: any;
 
-  constructor(private fb: FormBuilder, private firebaseService: FirebaseService) { }
+  constructor(private fb: FormBuilder, private firebaseService: FirebaseService, private elementRef: ElementRef, private renderer: Renderer) { }
 
   ngOnInit() {
     this.getMarkers();
     this.initializeMap();
+
     this.user = this.firebaseService.getUser().subscribe(user => {
       this.user = user;
       this.userEvents = this.firebaseService.getEvents().subscribe(events => {
@@ -56,6 +60,12 @@ export class MapsComponent implements OnInit {
     });
     this.buildForm();
 
+  }
+
+  parentEventsChange(updated_events: Event[]) { 
+    this.mapEvents = updated_events;
+    console.log("Update map component events: ");
+    console.log(this.mapEvents);
   }
 
   private initializeMap() {
@@ -138,11 +148,18 @@ export class MapsComponent implements OnInit {
         // console.log(events)
         var lng = parseFloat(events[i].longitude);
         var lat = parseFloat(events[i].latitude);
+        var popupContent = '<div><p class="wordwrap"><strong>' + events[i].name + '</strong></p><p class="wordwrap">' + events[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
+
         var marker = new L.marker({ lng, lat })
-          .bindPopup('<p class="wordwrap"><strong>' + events[i].name + '</strong></p><p class="wordwrap">' + events[i].description + '</p>', { maxWidth: 250 })
+          .bindPopup(popupContent, { maxWidth: 250 })
           .addTo(this.map);
       }
-    });
+        // var likeButton = this.elementRef.nativeElement.querySelector(".like-button");
+        // if(likeButton != null)
+        // {
+        //   likeButton.addEventListener('click', this.like())
+        // }  
+    });    
   }
 
   flyTo(data: Event) {
@@ -167,7 +184,17 @@ export class MapsComponent implements OnInit {
     this.firebaseService.addEvent(data);
     this.firebaseService.getEvents();
     this.map.closePopup();
+
+    // emit change
+    this.firebaseService.getEvents().subscribe(events => {
+      this.mapEvents = events;
+      this.childEventsChange.emit(this.mapEvents);
+      console.log("map component events after register = ");
+      console.log(this.mapEvents);
+    });
   }
+
+  like(): any { console.log("like function called"); }
 
   buildForm() {
     this.eventForm = this.fb.group({
