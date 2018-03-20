@@ -123,7 +123,7 @@ export class FirebaseService {
   emailLogin(email: string, password: string) {
     return this.afAuth.auth.signInWithEmailAndPassword(email, password)
       .then((user) => {
-        this.notify.update('Welcome to Firestarter!!!', 'success')
+        this.notify.update('Welcome to Firestarter!!!', 'success');
         return this.updateUserData(user); // if using firestore
       })
       .catch((error) => this.handleError(error));
@@ -154,10 +154,10 @@ export class FirebaseService {
   private updateUserData(user: User) {
 
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
-    if (user.firstname == '') {
+    if (user.firstname === '') {
       user.firstname = 'N/A';
     }
-    if (user.lastname == '') {
+    if (user.lastname === '') {
       user.lastname = 'N/A';
     }
     const data: User = {

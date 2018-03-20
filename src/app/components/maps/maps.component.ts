@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as L from 'leaflet';
-import 'leaflet-routing-machine'
+import 'leaflet-routing-machine';
 import { FirebaseService } from '../../services/firebase.service';
 import { Observable } from 'rxjs/Observable';
 import { Event } from '../../models/event';
@@ -16,9 +16,9 @@ import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angula
 export class MapsComponent implements OnInit {
 
   // UCF coordinates
-  lat: number = 28.6024;
-  lng: number = -81.2001;
-  zoom: number = 15;
+  lat = 28.6024;
+  lng = -81.2001;
+  zoom = 15;
   events: any;
   event: Event = {
     eid: '',
@@ -35,21 +35,20 @@ export class MapsComponent implements OnInit {
   user;
   map;
 
-  userEvents: any;
+  userEvents = new Array();
+
 
   constructor(private fb: FormBuilder, private firebaseService: FirebaseService) { }
 
   ngOnInit() {
     this.firebaseService.getUser().subscribe(user => {
       this.user = user;
-      this.userEvents = this.firebaseService.getEvents().subscribe(events => {
-        let userEvents = new Array();
-        for (var i = 0; i < events.length; i++) {
-          if (events[i].uid == this.user.uid) {
-            userEvents.push(events[i]);
+      this.firebaseService.getEvents().subscribe(events => {
+        for (let i = 0; i < events.length; i++) {
+          if (events[i].uid === this.user.uid) {
+            this.userEvents.push(events[i]);
           }
         }
-        this.userEvents = userEvents;
       });
     });
     this.buildForm();
@@ -64,12 +63,12 @@ export class MapsComponent implements OnInit {
   }
 
   buildMap() {
-    var UCFcoords = L.latLng(28.6014, -81.2001);
-    var topLeft = L.latLng(28.6116, -81.2073);
-    var bottomRight = L.latLng(28.5912, -81.1929);
-    var bounds = L.latLngBounds(topLeft, bottomRight);
+    const UCFcoords = L.latLng(28.6014, -81.2001);
+    const topLeft = L.latLng(28.6116, -81.2073);
+    const bottomRight = L.latLng(28.5912, -81.1929);
+    const bounds = L.latLngBounds(topLeft, bottomRight);
 
-    var mymap = L.map('mapid', {
+    const mymap = L.map('mapid', {
       center: UCFcoords,
       zoom: 16,
       //  minZoom: 16,
@@ -81,9 +80,8 @@ export class MapsComponent implements OnInit {
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
     }).addTo(mymap);
 
-    var prevDirections = 0;
-    var directions;
-    var userloc;
+    const prevDirections = 0;
+    let userloc;
 
     // this.map.locate({
     // }).on("locationfound", e => {
@@ -94,7 +92,7 @@ export class MapsComponent implements OnInit {
 
 
     this.map.on('click', click => {
-      var coordDest = mymap.mouseEventToLatLng(click.originalEvent);
+      const coordDest = mymap.mouseEventToLatLng(click.originalEvent);
       // const newMarker: Event = {
       //   uid: this.user.uid,
       //   name: this.eventForm.value['name'],
@@ -116,7 +114,7 @@ export class MapsComponent implements OnInit {
         if (user == null) {
           console.log('no user');
         } else {
-          var popup = L.popup()
+          const popup = L.popup()
             .setLatLng(coordDest)
             .setContent('<h6>You will be placing a marker here</h6>')
             .openOn(mymap);
@@ -132,10 +130,10 @@ export class MapsComponent implements OnInit {
     this.firebaseService.getEvents().subscribe(events => {
       this.events = events;
       console.log(events);
-      for (var i = 0; i < events.length; i++) {
-        var lng = parseFloat(events[i].longitude);
-        var lat = parseFloat(events[i].latitude);
-        var marker = new L.marker({ lng, lat })
+      for (let i = 0; i < events.length; i++) {
+        let lng = parseFloat(events[i].longitude);
+        const lat = parseFloat(events[i].latitude);
+        const marker = new L.marker({ lng, lat })
           .bindPopup('<p class="wordwrap"><strong>' + events[i].name + '</strong></p><p class="wordwrap">' + events[i].description + '</p>', { maxWidth: 250 })
           .addTo(this.map);
       }
@@ -145,13 +143,13 @@ export class MapsComponent implements OnInit {
   }
 
   flyTo(data: Event) {
-    console.log(data.longitude)
-    console.log(data.latitude)
-    this.lng = parseFloat(data.longitude)
-    this.lat = parseFloat(data.latitude)
-    var latlng = L.latLng(this.lat, this.lng)
-    console.log(latlng)
-    this.map.flyTo(latlng, 18)
+    // console.log(data.longitude)
+    // console.log(data.latitude)
+    this.lng = parseFloat(data.longitude);
+    this.lat = parseFloat(data.latitude);
+    const latlng = L.latLng(this.lat, this.lng);
+    // console.log(latlng)
+    this.map.flyTo(latlng, 18);
   }
 
   registerEvent() {
