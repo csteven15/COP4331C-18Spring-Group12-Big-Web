@@ -95,7 +95,7 @@ export class UserLoginComponent implements OnInit {
   }
 
   private afterSignIn() {
-    this.router.navigate(['/user-profile']);
+    this.router.navigate(['']);
   }
 
 }

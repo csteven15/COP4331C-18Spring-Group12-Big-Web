@@ -27,7 +27,7 @@ export class MapsComponent implements OnInit {
     description: '',
     longitude: '',
     latitude: ''
-  }
+  };
   eventForm: FormGroup;
 
   mouselat: any;
@@ -40,9 +40,7 @@ export class MapsComponent implements OnInit {
   constructor(private fb: FormBuilder, private firebaseService: FirebaseService) { }
 
   ngOnInit() {
-    this.getMarkers();
-    this.initializeMap();
-    this.user = this.firebaseService.getUser().subscribe(user => {
+    this.firebaseService.getUser().subscribe(user => {
       this.user = user;
       this.userEvents = this.firebaseService.getEvents().subscribe(events => {
         let userEvents = new Array();
@@ -55,11 +53,14 @@ export class MapsComponent implements OnInit {
       });
     });
     this.buildForm();
-
+    this.initializeMap();
+    this.getMarkers();
   }
+
 
   private initializeMap() {
     this.buildMap();
+    this.getMarkers();
   }
 
   buildMap() {
@@ -93,8 +94,6 @@ export class MapsComponent implements OnInit {
 
 
     this.map.on('click', click => {
-      this.getMarkers();
-
       var coordDest = mymap.mouseEventToLatLng(click.originalEvent);
       // const newMarker: Event = {
       //   uid: this.user.uid,
@@ -108,7 +107,7 @@ export class MapsComponent implements OnInit {
       this.eventForm.patchValue({
         latitude: this.mouselat,
         longitude: this.mouselng
-      })
+      });
 
       // this.firebaseService.addEvent(newMarker);
 
@@ -122,20 +121,18 @@ export class MapsComponent implements OnInit {
             .setContent('<h6>You will be placing a marker here</h6>')
             .openOn(mymap);
         }
-      })
+      });
 
       // var marker = L.marker(coordDest).addTo(mymap);
       // console.log(coordDest.lat + ', ' + coordDest.lng);
-      this.getMarkers();
-
     });
   }
 
   getMarkers() {
     this.firebaseService.getEvents().subscribe(events => {
       this.events = events;
+      console.log(events);
       for (var i = 0; i < events.length; i++) {
-        // console.log(events)
         var lng = parseFloat(events[i].longitude);
         var lat = parseFloat(events[i].latitude);
         var marker = new L.marker({ lng, lat })
@@ -143,6 +140,8 @@ export class MapsComponent implements OnInit {
           .addTo(this.map);
       }
     });
+    // this.reloadPage();
+
   }
 
   flyTo(data: Event) {
@@ -152,7 +151,7 @@ export class MapsComponent implements OnInit {
     this.lat = parseFloat(data.latitude)
     var latlng = L.latLng(this.lat, this.lng)
     console.log(latlng)
-    this.map.flyTo(latlng, 20)
+    this.map.flyTo(latlng, 18)
   }
 
   registerEvent() {
@@ -165,7 +164,6 @@ export class MapsComponent implements OnInit {
       latitude: this.mouselat
     };
     this.firebaseService.addEvent(data);
-    this.firebaseService.getEvents();
     this.map.closePopup();
   }
 

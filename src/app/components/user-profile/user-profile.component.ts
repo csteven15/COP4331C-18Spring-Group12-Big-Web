@@ -36,10 +36,7 @@ export class UserProfileComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.buildForm();
-
-
-    this.user = this.firebaseService.getUser().subscribe(user => {
+    this.firebaseService.getUser().subscribe(user => {
       this.user = user;
       this.events = this.firebaseService.getEvents().subscribe(events => {
         let userEvents = new Array();
@@ -49,9 +46,12 @@ export class UserProfileComponent implements OnInit {
           }
         }
         this.events = userEvents;
+        console.log(this.events)
       });
     });
-
+    this.buildForm();
+    console.log('after callback');
+    console.log(this.events);
 
   }
 

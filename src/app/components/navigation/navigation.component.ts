@@ -29,4 +29,12 @@ export class NavigationComponent implements OnInit {
     this.afAuth.auth.signOut();
   }
 
+  home() {
+    this.router.navigate(['']);
+  }
+
+  profile() {
+    this.router.navigate(['user-profile']);
+  }
+
 }

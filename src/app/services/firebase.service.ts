@@ -25,9 +25,9 @@ export class FirebaseService {
   eventDocument: AngularFirestoreDocument<Event>;
 
   constructor(private afAuth: AngularFireAuth,
-              private afs: AngularFirestore,
-              private router: Router,
-              private notify: NotifyService) {
+    private afs: AngularFirestore,
+    private router: Router,
+    private notify: NotifyService) {
 
     this.user = this.afAuth.authState
       .switchMap((user) => {
@@ -38,28 +38,28 @@ export class FirebaseService {
         }
       });
 
-      // this.eventsCollection = this.afs.collection('events');
-      //
-      // this.events = this.eventsCollection.snapshotChanges().map(changes => {
-      //   return changes.map(a => {
-      //     const data = a.payload.doc.data() as Event;
-      //     data.eid = a.payload.doc.id;
-      //     return data;
-      //   });
-      // });
+    // this.eventsCollection = this.afs.collection('events');
+    //
+    // this.events = this.eventsCollection.snapshotChanges().map(changes => {
+    //   return changes.map(a => {
+    //     const data = a.payload.doc.data() as Event;
+    //     data.eid = a.payload.doc.id;
+    //     return data;
+    //   });
+    // });
 
 
-    this.eventsCollection = this.afs.collection('events');
+    this.eventsCollection = this.afs.collection<Event>('/events');
 
-    this.events = this.eventsCollection.snapshotChanges().map(changes => {
-      return changes.map(a => {
-        const data = a.payload.doc.data() as Event;
-        data.eid = a.payload.doc.id;
-        return data;
-      });
-    });
+    this.events = this.eventsCollection.valueChanges();
 
-
+    // this.events = this.eventsCollection.snapshotChanges().map(changes => {
+    //   return changes.map(a => {
+    //     const data = a.payload.doc.data() as Event;
+    //     data.eid = a.payload.doc.id;
+    //     return data;
+    //   });
+    // });
 
   }
 
@@ -91,7 +91,7 @@ export class FirebaseService {
         this.notify.update('Welcome to Firestarter!!!', 'success');
         return this.updateUserData(credential.user);
       })
-      .catch((error) => this.handleError(error) );
+      .catch((error) => this.handleError(error));
   }
 
   //// Anonymous Auth ////
@@ -117,7 +117,7 @@ export class FirebaseService {
         this.notify.update('Welcome to Firestarter!!!', 'success');
         return this.updateUserData(user); // if using firestore
       })
-      .catch((error) => this.handleError(error) );
+      .catch((error) => this.handleError(error));
   }
 
   emailLogin(email: string, password: string) {
@@ -126,7 +126,7 @@ export class FirebaseService {
         this.notify.update('Welcome to Firestarter!!!', 'success')
         return this.updateUserData(user); // if using firestore
       })
-      .catch((error) => this.handleError(error) );
+      .catch((error) => this.handleError(error));
   }
 
   // Sends email allowing user to reset password
@@ -140,7 +140,7 @@ export class FirebaseService {
 
   signOut() {
     this.afAuth.auth.signOut().then(() => {
-        this.router.navigate(['/']);
+      this.router.navigate(['/']);
     });
   }
 
@@ -174,20 +174,20 @@ export class FirebaseService {
     return this.user;
   }
 
-  getEvents(){
+  getEvents() {
     return this.events;
   }
 
-  addEvent(event: Event){
+  addEvent(event: Event) {
     this.eventsCollection.add(event);
   }
 
-  deleteEvent(event: Event){
+  deleteEvent(event: Event) {
     this.eventDocument = this.afs.doc(`events/${event.eid}`);
     this.eventDocument.delete();
   }
 
-  updateEvent(event: Event){
+  updateEvent(event: Event) {
     this.eventDocument = this.afs.doc(`events/${event.eid}`);
     this.eventDocument.update(event);
   }
