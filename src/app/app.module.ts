@@ -25,7 +25,7 @@ import { UserDashboardComponent } from './components/user-dashboard/user-dashboa
 
 
 const appRoutes: Routes = [
-  {path: '', component: HomeComponent},
+  {path: '', component: AppComponent},
   {path: 'user-register', component: UserRegisterComponent},
   {path: 'user-login', component: UserLoginComponent},
   {path: 'user-form', component: UserFormComponent},
@@ -59,6 +59,12 @@ const appRoutes: Routes = [
     FlashMessagesModule.forRoot()
   ],
   providers: [FirebaseService, NotifyService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    NavigationComponent,
+    HomeComponent,
+    UserRegisterComponent,
+    UserLoginComponent,
+    UserProfileComponent]
 })
 export class AppModule { }

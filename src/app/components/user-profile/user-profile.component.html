@@ -1,4 +1,3 @@
-<app-navigation [events]="mapEvents" (eventsChange)="mapEventsChange($event)"></app-navigation>
 <br><br><br><br><br>
 <div *ngIf="firebaseService.user | async; then authenticated else guest">
   <!-- template will replace this div -->

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
@@ -18,7 +18,7 @@ type FormErrors = {[u in UserFields]: string };
   styleUrls: ['./user-register.component.css']
 })
 export class UserRegisterComponent implements OnInit {
-
+  @Output() createComponent = new EventEmitter<string>();
   userForm: FormGroup;
   formErrors: FormErrors = {
     'email': '',
@@ -50,7 +50,9 @@ export class UserRegisterComponent implements OnInit {
   registerUser() {
     // users
     this.firebaseService.emailSignUp(this.userForm.value['firstname'], this.userForm.value['lastname'], this.userForm.value['email'], this.userForm.value['password']);
-    this.router.navigate(['/user-login']);
+    //this.router.navigate(['/user-login']);
+    this.createComponent.emit('LoginComponent');
+    return;
   }
 
   buildForm() {

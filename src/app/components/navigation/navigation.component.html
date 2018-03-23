@@ -9,7 +9,7 @@
   </div>
 
 
-  <ng-template #guest>
+<!--   <ng-template #guest>
     <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
       <ul class="navbar-nav">
         <li class="nav-item">
@@ -37,6 +37,38 @@
         </li>
         <li class="nav-item">
           <a (click)="firebaseService.signOut()" href="" class="nav-link">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </ng-template> -->
+
+  <ng-template #guest>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <button (click)="changeComponent('HomeComponent')" class="nav-link">Main Map</button>
+        </li>
+        <li class="nav-item">
+          <button (click)="changeComponent('LoginComponent')" class="nav-link">Login</button>
+        </li>
+        <li class="nav-item">
+          <button (click)="changeComponent('RegisterComponent')" class="nav-link">Register</button>
+        </li>
+      </ul>
+    </div>
+  </ng-template>
+
+  <ng-template #authenticated>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarCollapse">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <button (click)="changeComponent('HomeComponent')" class="nav-link">Main Map</button>
+        </li>
+        <li class="nav-item">
+          <button (click)="changeComponent('ProfileComponent')" class="nav-link">Profile</button>
+        </li>
+        <li class="nav-item">
+          <button (click)="firebaseService.signOut()" href="" class="nav-link">Logout</button>
         </li>
       </ul>
     </div>

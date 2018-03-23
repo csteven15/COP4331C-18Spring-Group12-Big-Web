@@ -24,8 +24,8 @@
       </div>
 
       <button type="submit" class="btn btn-primary" [disabled]="!userForm.valid">Sign Up</button>
-      <button class="btn btn-primary" [routerLink]="['/user-login']" >Already a User?</button>
-
+     <!--  <button class="btn btn-primary" [routerLink]="['/user-login']" >Already a User?</button> -->
+      <button class="btn btn-primary" (click)="this.createComponent.emit('LoginComponent')" >Already a User?</button>
     </form>
   </div>
 </div>
