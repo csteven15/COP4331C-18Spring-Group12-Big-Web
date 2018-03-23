@@ -1,4 +1,5 @@
-import { Component, OnInit, ElementRef, Renderer, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, Renderer, Input, Output, 
+  EventEmitter, OnChanges, SimpleChanges, AfterContentInit, Renderer2 } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine'
 import { FirebaseService } from '../../services/firebase.service';
@@ -13,9 +14,10 @@ import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angula
   templateUrl: './maps.component.html',
   styleUrls: ['./maps.component.css']
 })
-export class MapsComponent implements OnInit, OnChanges {
+export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
   @Input() mapEvents: Event[];
   @Output() eventsChange = new EventEmitter<Event[]>();
+  @ViewChild('eventsList') eventsListRef: ElementRef;
 
 
   // UCF coordinates
@@ -43,7 +45,7 @@ export class MapsComponent implements OnInit, OnChanges {
   constructor(private fb: FormBuilder, 
     private firebaseService: FirebaseService, 
     private elementRef: ElementRef, 
-    private renderer: Renderer) { }
+    private renderer: Renderer2) { }
 
   ngOnInit() {
     this.initializeMap();
@@ -84,6 +86,25 @@ export class MapsComponent implements OnInit, OnChanges {
 
     this.updateMarkers();
     return;
+  }
+
+  ngAfterContentInit()
+  {
+    // initialize event list
+    var eventList = "";
+    for(var i=0; i<this.mapEvents.length; i++)
+    {
+      var container = "<div class=\"card mb-4\" style=\"padding: 10px;\">";
+      var block = "<div class=\"card-block\">";
+      var title = "<h6 class=\"card-title\">Event Name: " + this.mapEvents[i].name + "</h6>";
+      var description = "<p>Description: " + this.mapEvents[i].description + "</p>";
+      var button = "<button class=\"btn btn-primary\" (click)=\"flyTo(event)\">Fly Here!</button>";
+      var deleteButton = (this.user != null) ? "<button class=\"btn btn-primary\" (click)=\deleteEvent(event)\">Delete</button>" : "";
+      var closer = "</div></div>";
+      var event  = container + block + title + description + button + deleteButton + closer;
+      eventList = eventList + event;
+    }
+    this.eventsListRef.nativeElement.innerHTML = eventList;
   }
 
   updateMap()

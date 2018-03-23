@@ -1,36 +1,12 @@
+<br>
 <div class="row">
   <div class="col-8" id="mapid"></div>
   <div class="col-4">
-    <br><br><br><br>
     <div *ngIf="firebaseService.user | async; then authenticated else guest">
     </div>
-    <div *ngIf="events?.length > 0; then listevents else noevents">
-    </div>
+    <div #eventsList></div>
   </div>
-
 </div>
-
-<ng-template #listevents>
-  <hr>
-  <h6>List of Events</h6>
-  <div *ngFor="let event of events">
-    <div class="card mb-4" style="padding: 10px;">
-      <div class="card-block">
-        <h6 class="card-title">Event Name: {{event.name}} </h6>
-        <p>Description: {{event.description}}</p>
-        <button class="btn btn-primary" (click)="flyTo(event)">Fly Here!</button>
-        <div *ngIf="firebaseService.user | async; then delete else nodelete"></div>
-      </div>
-    </div>
-  </div>
-</ng-template>
-
-<ng-template #delete>
-  <button class="btn btn-primary" (click)="deleteEvent(event)">Delete</button>
-</ng-template>
-
-<ng-template #nodelete>
-</ng-template>
 
 <ng-template #noevents>
   <hr>
