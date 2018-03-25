@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
@@ -19,7 +19,7 @@ type FormErrors = {[u in UserFields]: string };
   styleUrls: ['./user-login.component.css']
 })
 export class UserLoginComponent implements OnInit {
-
+  @Output() createComponent = new EventEmitter<string>();
   userForm: FormGroup;
   formErrors: FormErrors = {
     'email': '',
@@ -62,7 +62,7 @@ export class UserLoginComponent implements OnInit {
       ]],
       'password': ['', [
         Validators.pattern('^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$'),
-        Validators.minLength(4),
+        Validators.minLength(6),
         Validators.maxLength(25),
       ]]
     });
@@ -94,8 +94,11 @@ export class UserLoginComponent implements OnInit {
     }
   }
 
-  private afterSignIn() {
-    this.router.navigate(['/user-profile']);
+  private afterSignIn() 
+  {
+    //this.router.navigate(['/user-profile']);
+    this.createComponent.emit('ProfileComponent');
+    return;
   }
 
 }

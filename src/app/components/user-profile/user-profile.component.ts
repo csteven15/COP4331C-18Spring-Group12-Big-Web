@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs/Observable';
@@ -15,9 +15,11 @@ import { Router } from '@angular/router';
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css']
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnChanges 
+{
+  @Input() events: Event[];
+  @Output() onEventsChange = new EventEmitter<Event[]>();
 
-  events: Event[];
   event: Event = {
     name: '',
     description: '',
@@ -37,29 +39,83 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit() {
     this.buildForm();
-    this.firebaseService.getEvents().subscribe(events => {
-      console.log(events);
-      this.events = events;
-    });
 
     this.user = this.firebaseService.getUser().subscribe(user => {
-      console.log(user);
       this.user = user;
     });
-    console.log(this.user);
 
+    // this.user = this.firebaseService.getUser().subscribe(user => {
+    //   this.user = user;
+    //   this.events = this.firebaseService.getEvents().subscribe(events => {
+    //     let userEvents = new Array();
+    //     for (var i = 0; i < events.length; i++) {
+    //       if (events[i].uid == this.user.uid) {
+    //         userEvents.push(events[i]);
+    //       }
+    //     }
+    //     this.events = userEvents;
+    //   });
+    // });
+  }
+
+  ngOnChanges(changes: SimpleChanges)
+  {
+    console.log("Profile ngOnChanges called");
+    var updatedEvents = changes["events"].currentValue;
+    // if(this.events == updatedEvents || updatedEvents == null) { return; }
+    this.events = updatedEvents;
+    console.log("Profile events after ngOnChanges: ");
+    console.log(this.events);
+
+    var userEvents = []
+    for (var i = 0; i < this.events.length; i++) 
+    {
+      if (this.events[i].uid == this.user.uid) 
+        { 
+          userEvents.push(this.events[i]); 
+        }
+    }
+    this.events = userEvents;
+    return;
+  }
+
+  eventsChange(updatedEvents: Event[]) { 
+    // this.events = updatedEvents; 
+    // console.log("Updated profile component events: ");
+    // console.log(this.events);
+
+    // var userEvents = []
+    // for (var i = 0; i < this.events.length; i++) 
+    // {
+    //   if (this.events[i].uid == this.user.uid) 
+    //     { 
+    //       userEvents.push(this.events[i]); 
+    //     }
+    // }
+    // this.events = userEvents;
+    // return;
   }
 
   registerEvent() {
     // users
     const data: Event = {
+      uid: this.user.uid,
       name: this.eventForm.value['name'],
       description: this.eventForm.value['description'],
       longitude: this.eventForm.value['longitude'],
-      latitude: this.eventForm.value['latitude']
+      latitude: this.eventForm.value['latitude'],
+      likes: 0,
+      dislikes: 0
     };
     this.firebaseService.addEvent(data);
-    //this.firebaseService.getUser();
+
+    // emit event changes
+    this.firebaseService.getEvents().subscribe(events => {
+      this.events = events;
+      this.onEventsChange.emit(this.events);
+      console.log("Profile events after register: ");
+      console.log(this.events);
+    });
   }
 
   buildForm() {
@@ -69,9 +125,5 @@ export class UserProfileComponent implements OnInit {
       'longitude': ['', []],
       'latitude': ['', []]
     });
-
   }
-
-
-
 }
