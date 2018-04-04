@@ -2,7 +2,7 @@
 <div class="row">
   <div class="col-8" id="mapid"></div>
   <div class="col-4">
-    <app-maps-events-list [events]="mapEvents" [latitude]="mouselat" [longitude]="mouselng" [user]="user"
+    <app-maps-events-list [events]="events" [latitude]="mouselat" [longitude]="mouselng" [user]="user"
     (flyTo)="flyTo($event)" (eventsChange)="onEventsChange($event)"></app-maps-events-list>
     
   </div>

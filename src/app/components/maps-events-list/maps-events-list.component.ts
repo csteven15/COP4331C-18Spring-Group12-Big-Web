@@ -69,11 +69,6 @@ export class MapsEventsListComponent implements OnInit, OnChanges {
     });
   }
 
-  flyToOnClick(event: Event) { this.flyTo.emit(event); }
-
-
-  like(): any { console.log("like function called"); }
-  
   deleteEvent(event: Event)
   {
   	this.firebaseService.deleteEvent(event);
@@ -81,6 +76,11 @@ export class MapsEventsListComponent implements OnInit, OnChanges {
   	this.events.splice(index, 1);
   	this.eventsChange.emit(this.events);
   }
+
+  flyToOnClick(event: Event) { this.flyTo.emit(event); }
+
+
+  like(): any { console.log("like function called"); }
 
   registerEvent() 
   {
