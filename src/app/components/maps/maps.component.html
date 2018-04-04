@@ -2,46 +2,14 @@
 <div class="row">
   <div class="col-8" id="mapid"></div>
   <div class="col-4">
-    <div *ngIf="firebaseService.user | async; then authenticated else guest">
-    </div>
-    <div #eventsList></div>
+    <app-maps-events-list [events]="mapEvents" [latitude]="mouselat" [longitude]="mouselng" [user]="user"
+    (flyTo)="flyTo($event)" (eventsChange)="onEventsChange($event)"></app-maps-events-list>
+    
   </div>
 </div>
 
+<!-- TODO: Move this to maps-events-list -->
 <ng-template #noevents>
   <hr>
   <h6>There are no events to list</h6>
-</ng-template>
-
-<ng-template #guest>
-  <h6>Welcome, Guest</h6>
-  <p>Login to add events started...</p>
-</ng-template>
-<ng-template #authenticated>
-  <h6>Welcome, {{ user.firstname }} {{user.lastname}}</h6>
-  <div class="card mb-4" style="padding: 10px;">
-    <form [formGroup]="eventForm" (ngSubmit)="registerEvent()">
-      <div *ngIf="mouselat && mouselng; then point else nopoint">
-      </div>
-      <ng-template #point>
-        <h6>Point selected on map</h6>
-      </ng-template>
-      <ng-template #nopoint>
-        <h6>Please select a point on map</h6>
-      </ng-template>
-      <div class="form-group">
-        <input type="name" id="name" class="form-control" formControlName="name" placeholder="Name of event">
-      </div>
-      <div class="form-group">
-        <input type="description" id="description" class="form-control" formControlName="description" placeholder="Description of event">
-      </div>
-      <div class="form-group" style="display: none;">
-        <input type="latitude" id="latitude" class="form-control" formControlName="latitude">
-      </div>
-      <div class="form-group" style="display: none;">
-        <input type="longitude" id="longitude" class="form-control" formControlName="longitude">
-      </div>
-      <button [disabled]="!eventForm.valid" type="submit" class="btn btn-primary">Add Event</button>
-    </form>
-  </div>
 </ng-template>

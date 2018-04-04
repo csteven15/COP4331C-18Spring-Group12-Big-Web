@@ -22,6 +22,7 @@ import { HttpModule } from '@angular/http';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { UserDashboardComponent } from './components/user-dashboard/user-dashboard.component';
+import { MapsEventsListComponent } from './components/maps-events-list/maps-events-list.component';
 
 
 const appRoutes: Routes = [
@@ -43,7 +44,8 @@ const appRoutes: Routes = [
     UserLoginComponent,
     UserFormComponent,
     UserProfileComponent,
-    UserDashboardComponent
+    UserDashboardComponent,
+    MapsEventsListComponent
   ],
   imports: [
     BrowserModule,
