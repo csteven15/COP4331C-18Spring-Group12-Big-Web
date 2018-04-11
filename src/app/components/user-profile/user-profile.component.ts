@@ -15,7 +15,7 @@ import { Router } from '@angular/router';
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css']
 })
-export class UserProfileComponent implements OnInit, OnChanges 
+export class UserProfileComponent implements OnInit, OnChanges
 {
   @Input() events: Event[];
   @Output() onEventsChange = new EventEmitter<Event[]>();
@@ -23,8 +23,10 @@ export class UserProfileComponent implements OnInit, OnChanges
   event: Event = {
     name: '',
     description: '',
-    longitude: '',
-    latitude: ''
+    longitude: 0,
+    latitude: 0,
+    like: 0,
+    dislike:0
   }
 
   eventForm: FormGroup;
@@ -68,28 +70,28 @@ export class UserProfileComponent implements OnInit, OnChanges
     console.log(this.events);
 
     var userEvents = []
-    for (var i = 0; i < this.events.length; i++) 
+    for (var i = 0; i < this.events.length; i++)
     {
-      if (this.events[i].uid == this.user.uid) 
-        { 
-          userEvents.push(this.events[i]); 
+      if (this.events[i].uid == this.user.uid)
+        {
+          userEvents.push(this.events[i]);
         }
     }
     this.events = userEvents;
     return;
   }
 
-  eventsChange(updatedEvents: Event[]) { 
-    // this.events = updatedEvents; 
+  eventsChange(updatedEvents: Event[]) {
+    // this.events = updatedEvents;
     // console.log("Updated profile component events: ");
     // console.log(this.events);
 
     // var userEvents = []
-    // for (var i = 0; i < this.events.length; i++) 
+    // for (var i = 0; i < this.events.length; i++)
     // {
-    //   if (this.events[i].uid == this.user.uid) 
-    //     { 
-    //       userEvents.push(this.events[i]); 
+    //   if (this.events[i].uid == this.user.uid)
+    //     {
+    //       userEvents.push(this.events[i]);
     //     }
     // }
     // this.events = userEvents;
@@ -104,8 +106,8 @@ export class UserProfileComponent implements OnInit, OnChanges
       description: this.eventForm.value['description'],
       longitude: this.eventForm.value['longitude'],
       latitude: this.eventForm.value['latitude'],
-      likes: 0,
-      dislikes: 0
+      like: 0,
+      dislike: 0
     };
     this.firebaseService.addEvent(data);
 
@@ -118,12 +120,30 @@ export class UserProfileComponent implements OnInit, OnChanges
     });
   }
 
+  likeUpdate(event: Event) {
+
+    event.like++;
+    this.user.likes[0] = "event.eid";
+    this.firebaseService.updateEvent(event);
+    this.firebaseService.updateUserData(this.user);
+  }
+
+  dislikeUpdate(event: Event) {
+    event.dislike++;
+    this.firebaseService.updateEvent(event);
+
+    if(event.dislike - event.like >= 10)
+    this.firebaseService.deleteEvent(event);
+  }
+
   buildForm() {
     this.eventForm = this.fb.group({
       'name': ['', []],
       'description': ['', []],
       'longitude': ['', []],
-      'latitude': ['', []]
+      'latitude': ['', []],
+      'like': ['', []],
+      'dislike': ['', []]
     });
   }
 }

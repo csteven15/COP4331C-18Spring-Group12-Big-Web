@@ -111,13 +111,15 @@ export class FirebaseService {
   //// Email/Password Auth ////
   emailSignUp(firstname: string, lastname: string, email: string, password: string) {
     return this.afAuth.auth.createUserWithEmailAndPassword(email, password)
-      .then((user) => {
-        user.firstname = firstname;
-        user.lastname = lastname;
-        this.notify.update('Welcome to Firestarter!!!', 'success');
-        return this.updateUserData(user); // if using firestore
-      })
-      .catch((error) => this.handleError(error) );
+    .then((user) => {
+      user.firstname = firstname;
+      user.lastname = lastname;
+      user.likes = [];
+      user.dislikes = [];
+      this.notify.update('Welcome to Firestarter!!!', 'success');
+      return this.updateUserData(user); // if using firestore
+    })
+    .catch((error) => this.handleError(error) );
   }
 
   emailLogin(email: string, password: string) {
@@ -160,11 +162,19 @@ export class FirebaseService {
     if (user.lastname == '') {
       user.lastname = 'N/A';
     }
+    if(user.likes == null) {
+      user.likes = [];
+    }
+    if(user.dislikes == null) {
+      user.dislikes = [];
+    }
     const data: User = {
       uid: user.uid,
       firstname: user.firstname,
       lastname: user.lastname,
       email: user.email || null,
+      likes: user.likes || null,
+      dislikes: user.dislikes || null
     };
     return userRef.set(data);
   }

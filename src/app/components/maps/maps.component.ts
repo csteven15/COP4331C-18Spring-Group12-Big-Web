@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, 
+import { Component, OnInit, Input, Output,
   EventEmitter, OnChanges, SimpleChanges, AfterContentInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine'
@@ -30,8 +30,10 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
     uid: '',
     name: '',
     description: '',
-    longitude: '',
-    latitude: ''
+    longitude: 0,
+    latitude: 0,
+    like: 0,
+    dislike: 0
   }
   eventForm: FormGroup;
 
@@ -42,10 +44,10 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
 
   userEvents: any;
 
-  constructor(private fb: FormBuilder, 
+  constructor(private fb: FormBuilder,
     private firebaseService: FirebaseService) { }
 
-  ngOnInit() 
+  ngOnInit()
   {
     this.buildMap();
     this.getMarkers();
@@ -84,8 +86,8 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
       if(index < 0)
       {
         // console.log(this.events[i])
-        var lng = parseFloat(this.events[i].longitude);
-        var lat = parseFloat(this.events[i].latitude);
+        var lng = this.events[i].longitude;
+        var lat = this.events[i].latitude;
         var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p><p class="wordwrap">' + this.events[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
 
         var marker = new L.marker({ lng, lat })
@@ -141,8 +143,8 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
       for(var i=0; i<this.events.length; i++)
       {
         // console.log(this.events[i])
-        var lng = parseFloat(this.events[i].longitude);
-        var lat = parseFloat(this.events[i].latitude);
+        var lng = this.events[i].longitude;
+        var lat = this.events[i].latitude;
         var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p><p class="wordwrap">' + this.events[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
 
         var marker = new L.marker({ lng, lat })
@@ -152,23 +154,23 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
         // if(likeButton != null)
         // {
         //   likeButton.addEventListener('click', this.like())
-        // } 
+        // }
       }
       return;
-    }   
+    }
   }
 
 
   // maps events list functions
 
-  onEventsChange(updatedEvents: Event[]) 
+  onEventsChange(updatedEvents: Event[])
   {
     this.eventsChange.emit(updatedEvents)
   }
 
   flyTo(data: Event) {
-    this.lng = parseFloat(data.longitude)
-    this.lat = parseFloat(data.latitude)
+    this.lng = data.longitude
+    this.lat = data.latitude
     var latlng = L.latLng(this.lat, this.lng)
     console.log(latlng)
     this.map.flyTo(latlng, 18)

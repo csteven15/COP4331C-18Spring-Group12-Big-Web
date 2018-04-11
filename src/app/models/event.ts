@@ -3,8 +3,8 @@ export interface Event{
   uid?: string;
   name?: string | null;
   description?: string | null;
-  longitude?: string | null;
-  latitude?: string | null;
-  likes?: number;
-  dislikes?: number;
+  longitude?: number;
+  latitude?: number;
+  like?: number;
+  dislike?: number;
 }
