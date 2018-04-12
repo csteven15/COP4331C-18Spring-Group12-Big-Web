@@ -120,21 +120,104 @@ export class UserProfileComponent implements OnInit, OnChanges
     });
   }
 
+  /*testingEID(event: Event) {
+
+    this.user.likes[0] = "0000";
+    this.user.likes[1] = "0001";
+    this.user.likes[2] = "0002";
+    this.user.likes[3] = "0003";
+    this.user.likes[4] = "0004";
+    this.user.likes[5] = "0005";
+    this.user.likes[6] = "0006";
+    this.user.likes[7] = "0007";
+    this.user.likes[8] = "0008";
+    this.user.likes[9] = "0009";
+    this.user.likes[10] = "0010";
+    this.user.dislikes[0] = "0000";
+    this.user.dislikes[1] = "0001";
+    this.user.dislikes[2] = "0002";
+    this.user.dislikes[3] = "0003";
+    this.user.dislikes[4] = "0004";
+    this.user.dislikes[5] = "0005";
+    this.user.dislikes[6] = "0006";
+    this.user.dislikes[7] = "0007";
+    this.user.dislikes[8] = "0008";
+    this.user.dislikes[9] = "0009";
+    this.user.dislikes[10] = "0010";
+    this.firebaseService.updateUser(this.user);
+  }
+  */
+
+  removeLikesEID(index) {
+    this.user.likes.splice(index, 1);
+    //this.firebaseService.updateUser(this.user);
+  }
+
+  removeDislikesEID(index) {
+    this.user.dislikes.splice(index, 1);
+    //this.firebaseService.updateUser(this.user);
+  }
+
   likeUpdate(event: Event) {
 
+    var likelen = this.user.likes.length;
+    var dislikelen = this.user.dislikes.length;
+
+    if(likelen > dislikelen)
+      var len = likelen;
+    else
+      var len = dislikelen
+
+    for(var i = 0; i < len; i++)
+    {
+      if(this.user.likes[i] == event.eid)
+          return;
+      else if(this.user.dislikes[i] == event.eid)
+      {
+          event.dislike--;
+          this.removeDislikesEID(i);
+      }
+    }
+
+    this.user.likes[likelen] = event.eid;
     event.like++;
-    this.user.likes[0] = "event.eid";
+
     this.firebaseService.updateEvent(event);
-    this.firebaseService.updateUserData(this.user);
+    this.firebaseService.updateUser(this.user);
   }
+
 
   dislikeUpdate(event: Event) {
+
+    var likelen = this.user.likes.length;
+    var dislikelen = this.user.dislikes.length;
+
+    if(likelen > dislikelen)
+      var len = likelen;
+    else
+      var len = dislikelen
+
+    for(var i = 0; i < len; i++)
+    {
+      if(this.user.dislikes[i] == event.eid)
+          return;
+      else if(this.user.likes[i] == event.eid)
+      {
+        event.like--;
+        this.removeLikesEID(i);
+      }
+    }
+
+    this.user.dislikes[dislikelen] = event.eid;
     event.dislike++;
+
     this.firebaseService.updateEvent(event);
+    this.firebaseService.updateUser(this.user);
 
     if(event.dislike - event.like >= 10)
-    this.firebaseService.deleteEvent(event);
+      this.firebaseService.deleteEvent(event);
   }
+
 
   buildForm() {
     this.eventForm = this.fb.group({

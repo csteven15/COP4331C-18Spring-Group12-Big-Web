@@ -203,4 +203,11 @@ export class FirebaseService {
   }
 
 
+  updateUser(user: User){
+
+    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
+    return userRef.update(user);
+  }
+
+
 }
