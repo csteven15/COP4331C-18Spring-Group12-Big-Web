@@ -14,42 +14,23 @@ export class HomeComponent implements OnInit, OnChanges{
   
   constructor(private firebaseService: FirebaseService) { }
 
-  ngOnInit()
-  {
-    console.log("Home ngOnInit Called");
-    console.log("Home events OnInit: ");
-    console.log(this.events);
-    // this.firebaseService.getEvents().subscribe(events => {
-    //   this.events = events;
-    //   console.log("Home events after ngAfterContentInit: ");
-    //   console.log(this.events);
-    // },error => {
-    //   console.log(error);
-    // });
-  }
+  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges)
   {
-    console.log("Home ngOnChanges called");
-    var change = changes["events"].currentValue;
-    // if(change == this.events) 
-    // {
-    //   console.log("No changes");
-    //   return;
-    // }
-    console.log("Home events after ngOnChanges: ");
-    this.events = change;
-    console.log(this.events);
+    // console.log("Home ngOnChanges called");
+    var updatedEvents = changes["events"].currentValue;
+    this.eventsChange(updatedEvents);
     return;
   }
 
   // receives output from maps component
   eventsChange(updatedEvents: Event[])
   { 
-    console.log("Home received events change from maps: ")
+    // console.log("Home received events change from maps: ")
   	this.events = updatedEvents; 
-  	console.log("Home events after update: ");
-  	console.log(this.events);
+  	// console.log("Home events after update: ");
+  	// console.log(this.events);
     this.onEventsChange.emit(this.events)
   }
 }

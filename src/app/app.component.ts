@@ -68,7 +68,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   createHomeComponent()
   {
-  	console.log("createHomeComponent called");
+  	// console.log("createHomeComponent called");
   	this.container.clear();
   	const factory = this.resolver.resolveComponentFactory(HomeComponent);
   	this.componentRef = this.container.createComponent(factory);
@@ -78,7 +78,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   createLoginComponent()
   {
-  	console.log("createLoginComponent called");
+  	// console.log("createLoginComponent called");
   	this.container.clear();
   	const factory = this.resolver.resolveComponentFactory(UserLoginComponent);
   	this.componentRef = this.container.createComponent(factory);
@@ -88,7 +88,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   createProfileComponent()
   {
-  	console.log("createProfileComponent called");
+  	// console.log("createProfileComponent called");
   	this.container.clear();
   	const factory = this.resolver.resolveComponentFactory(UserProfileComponent);
   	this.componentRef = this.container.createComponent(factory);
@@ -98,7 +98,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   createRegisterComponent()
   {
-  	console.log("createRegisterComponent called");
+  	// console.log("createRegisterComponent called");
   	this.container.clear();
   	const factory = this.resolver.resolveComponentFactory(UserRegisterComponent);
   	this.componentRef = this.container.createComponent(factory);

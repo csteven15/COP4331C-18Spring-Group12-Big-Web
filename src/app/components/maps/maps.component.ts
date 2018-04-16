@@ -1,11 +1,12 @@
-import { Component, OnInit, ElementRef, ViewChild, Renderer, Input, Output, 
-  EventEmitter, OnChanges, SimpleChanges, AfterContentInit, Renderer2 } from '@angular/core';
+import { Component, OnInit, Input, Output,
+  EventEmitter, OnChanges, SimpleChanges, AfterContentInit } from '@angular/core';
 import * as L from 'leaflet';
 import 'leaflet-routing-machine'
 import { FirebaseService } from '../../services/firebase.service';
 import { Observable } from 'rxjs/Observable';
 import { Event } from '../../models/event';
 import { User } from '../../models/user';
+import { MapsEventsListComponent } from '../maps-events-list/maps-events-list.component';
 import { switchMap } from 'rxjs/operators';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
@@ -15,23 +16,24 @@ import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angula
   styleUrls: ['./maps.component.css']
 })
 export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
-  @Input() mapEvents: Event[];
+  @Input() events: Event[];
   @Output() eventsChange = new EventEmitter<Event[]>();
-  @ViewChild('eventsList') eventsListRef: ElementRef;
 
 
   // UCF coordinates
   lat: number = 28.6024;
   lng: number = -81.2001;
   zoom: number = 15;
-  events: any;
+
   event: Event = {
     eid: '',
     uid: '',
     name: '',
     description: '',
-    longitude: '',
-    latitude: ''
+    longitude: 0,
+    latitude: 0,
+    like: 0,
+    dislike: 0
   }
   eventForm: FormGroup;
 
@@ -42,18 +44,13 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
 
   userEvents: any;
 
-  constructor(private fb: FormBuilder, 
-    private firebaseService: FirebaseService, 
-    private elementRef: ElementRef, 
-    private renderer: Renderer2) { }
+  constructor(private fb: FormBuilder,
+    private firebaseService: FirebaseService) { }
 
-  ngOnInit() {
-    this.initializeMap();
+  ngOnInit()
+  {
+    this.buildMap();
     this.getMarkers();
-    this.buildForm();
-
-    console.log("Map events OnInit: ");
-    console.log(this.mapEvents);
 
     this.user = this.firebaseService.getUser().subscribe(user => {
       this.user = user;
@@ -71,57 +68,27 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
 
   ngOnChanges(changes: SimpleChanges)
   {
-    console.log(" Map ngOnChanges called");
-    var change = changes["mapEvents"].currentValue
-    // if(change == this.mapEvents) 
-    // { 
-    //   console.log("No changes")
-    //   return; 
-    // }
-
-    console.log("Map events before ngOnChanges ");
-    this.mapEvents = change;
-    console.log("Map events after ngOnChanges ");
-    console.log(this.mapEvents);
-
+    var change = changes["events"].currentValue
+    this.events = change;
     this.updateMarkers();
     return;
   }
 
-  ngAfterContentInit()
-  {
-    // initialize event list
-    var eventList = "";
-    for(var i=0; i<this.mapEvents.length; i++)
-    {
-      var container = "<div class=\"card mb-4\" style=\"padding: 10px;\">";
-      var block = "<div class=\"card-block\">";
-      var title = "<h6 class=\"card-title\">Event Name: " + this.mapEvents[i].name + "</h6>";
-      var description = "<p>Description: " + this.mapEvents[i].description + "</p>";
-      var button = "<button class=\"btn btn-primary\" (click)=\"flyTo(event)\">Fly Here!</button>";
-      var deleteButton = (this.user != null) ? "<button class=\"btn btn-primary\" (click)=\deleteEvent(event)\">Delete</button>" : "";
-      var closer = "</div></div>";
-      var event  = container + block + title + description + button + deleteButton + closer;
-      eventList = eventList + event;
-    }
-    this.eventsListRef.nativeElement.innerHTML = eventList;
-  }
-
-  updateMap()
-  {
-    this.initializeMap();
-  }
+  ngAfterContentInit() {}
 
   updateMarkers()
   {
-    if(this.mapEvents != null )
+    if(this.events == null) { return; }
+    for(var i=0; i<this.events.length; i++)
     {
-      for(var i=0; i<this.mapEvents.length; i++)
+      var event = this.events[i];
+      var index = this.events.indexOf(event);
+      if(index < 0)
       {
-        console.log(this.mapEvents[i])
-        var lng = parseFloat(this.mapEvents[i].longitude);
-        var lat = parseFloat(this.mapEvents[i].latitude);
-        var popupContent = '<div><p class="wordwrap"><strong>' + this.mapEvents[i].name + '</strong></p><p class="wordwrap">' + this.mapEvents[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
+        // console.log(this.events[i])
+        var lng = this.events[i].longitude;
+        var lat = this.events[i].latitude;
+        var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p><p class="wordwrap">' + this.events[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
 
         var marker = new L.marker({ lng, lat })
           .bindPopup(popupContent, { maxWidth: 250 })
@@ -129,10 +96,6 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
       }
     }
     return;
-  }
-
-  private initializeMap() {
-    this.buildMap();
   }
 
   buildMap() {
@@ -157,62 +120,32 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
     var directions;
     var userloc;
 
-    // this.map.locate({
-    // }).on("locationfound", e => {
-    //   userloc = e.latlng;
-    //   new L.marker(userloc).addTo(mymap);
-    // });
-
-
-
+    // create popup onclick
     this.map.on('click', click => {
-      this.getMarkers();
-
       var coordDest = mymap.mouseEventToLatLng(click.originalEvent);
-      // const newMarker: Event = {
-      //   uid: this.user.uid,
-      //   name: this.eventForm.value['name'],
-      //   description: this.eventForm.value['description'],
-      //   longitude: coordDest.lng,
-      //   latitude: coordDest.lat
-      // }
+
       this.mouselat = coordDest.lat;
       this.mouselng = coordDest.lng;
-      this.eventForm.patchValue({
-        latitude: this.mouselat,
-        longitude: this.mouselng
-      })
 
-      // this.firebaseService.addEvent(newMarker);
-
-      // add markers
-      this.firebaseService.user.subscribe(user => {
-        if (user == null) {
-          console.log('no user');
-        } else {
-          var popup = L.popup()
-            .setLatLng(coordDest)
-            .setContent('<h6>You will be placing a marker here</h6>')
-            .openOn(mymap);
-        }
-      })
-
-      // var marker = L.marker(coordDest).addTo(mymap);
-      // console.log(coordDest.lat + ', ' + coordDest.lng);
-      this.getMarkers();
-
+      if(this.user != null)
+      {
+        var popup = L.popup()
+          .setLatLng(coordDest)
+          .setContent('<h6>You will be placing a marker here</h6>')
+          .openOn(mymap);
+      }
     });
   }
 
   getMarkers() {
-    if(this.mapEvents != null )
+    if(this.events != null )
     {
-      for(var i=0; i<this.mapEvents.length; i++)
+      for(var i=0; i<this.events.length; i++)
       {
-        console.log(this.mapEvents[i])
-        var lng = parseFloat(this.mapEvents[i].longitude);
-        var lat = parseFloat(this.mapEvents[i].latitude);
-        var popupContent = '<div><p class="wordwrap"><strong>' + this.mapEvents[i].name + '</strong></p><p class="wordwrap">' + this.mapEvents[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
+        // console.log(this.events[i])
+        var lng = this.events[i].longitude;
+        var lat = this.events[i].latitude;
+        var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p><p class="wordwrap">' + this.events[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
 
         var marker = new L.marker({ lng, lat })
           .bindPopup(popupContent, { maxWidth: 250 })
@@ -221,54 +154,26 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
         // if(likeButton != null)
         // {
         //   likeButton.addEventListener('click', this.like())
-        // } 
+        // }
       }
       return;
-    }   
+    }
+  }
+
+
+  // maps events list functions
+
+  onEventsChange(updatedEvents: Event[])
+  {
+    this.eventsChange.emit(updatedEvents)
   }
 
   flyTo(data: Event) {
-    console.log(data.longitude)
-    console.log(data.latitude)
-    this.lng = parseFloat(data.longitude)
-    this.lat = parseFloat(data.latitude)
+    this.lng = data.longitude
+    this.lat = data.latitude
     var latlng = L.latLng(this.lat, this.lng)
     console.log(latlng)
-    this.map.flyTo(latlng, 20)
+    this.map.flyTo(latlng, 18)
   }
-
-  registerEvent() {
-    // users
-    const data: Event = {
-      uid: this.user.uid,
-      name: this.eventForm.value['name'],
-      description: this.eventForm.value['description'],
-      longitude: this.mouselng,
-      latitude: this.mouselat
-    };
-    this.firebaseService.addEvent(data);
-    this.firebaseService.getEvents();
-    this.map.closePopup();
-
-    // emit change
-    this.firebaseService.getEvents().subscribe(events => {
-      this.mapEvents = events;
-      this.eventsChange.emit(this.mapEvents);
-      console.log("map component events after register = ");
-      console.log(this.mapEvents);
-    });
-  }
-
-  like(): any { console.log("like function called"); }
-
-  buildForm() {
-    this.eventForm = this.fb.group({
-      'name': ['', [Validators.required]],
-      'description': ['', [Validators.required]],
-      'latitude': ['', [Validators.required]],
-      'longitude': ['', [Validators.required]]
-    });
-  }
-
 
 }
