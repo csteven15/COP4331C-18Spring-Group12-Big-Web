@@ -162,19 +162,12 @@ export class FirebaseService {
     if (user.lastname == '') {
       user.lastname = 'N/A';
     }
-    if(user.likes == null) {
-      user.likes = [];
-    }
-    if(user.dislikes == null) {
-      user.dislikes = [];
-    }
+    
     const data: User = {
       uid: user.uid,
       firstname: user.firstname,
       lastname: user.lastname,
-      email: user.email || null,
-      likes: user.likes || null,
-      dislikes: user.dislikes || null
+      email: user.email || null
     };
     return userRef.set(data);
   }

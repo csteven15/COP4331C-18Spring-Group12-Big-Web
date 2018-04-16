@@ -27,7 +27,6 @@ export class UserProfileComponent implements OnInit, OnChanges
     latitude: 0,
     like: 0,
     dislike:0,
-
   }
 
   eventForm: FormGroup;
