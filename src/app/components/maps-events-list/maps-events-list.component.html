@@ -7,6 +7,11 @@
 	    <p>Description: {{event.description}}</p>
 	    <button class="btn btn-primary" (click)="flyToOnClick(event)">Fly Here!</button>
 	    <button *ngIf="user != null" class="btn btn-primary" (click)="deleteEvent(event)">Delete</button>
+      <p></p>
+      <input type="button"  class="coolButton" style="color:Green" value ="👍" (click)="likeUpdate(event)">
+      <input class="tinyBox" value ={{event.like}}>
+      <input type="button"  class="coolButton" style="color:Red" value ="👎" (click)="dislikeUpdate(event)">
+      <input class="tinyBox" value ={{event.dislike}}>
 	  </div>
 	</div>
 </div>

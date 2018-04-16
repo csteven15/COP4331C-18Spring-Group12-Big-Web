@@ -65,15 +65,11 @@
           <p>Longitude: {{event.longitude}}</p>
           <p>Latitude: {{event.latitude}}</p>
 
-          <!--<input type="button"  class="coolButton" style="color:Green" value ="Adding data" (click)="testingEID()">
-          <p></p>
-          -->
+
           <input type="button"  class="coolButton" style="color:Green" value ="👍" (click)="likeUpdate(event)">
-          <input class="tinyBox" value ={{event.like}}>
+          <input class="tinyBox" value = showLikeInPercent(event)>
           <input type="button"  class="coolButton" style="color:Red" value ="👎" (click)="dislikeUpdate(event)">
           <input class="tinyBox" value ={{event.dislike}}>
-
-
         </div>
       </div>
       <br>

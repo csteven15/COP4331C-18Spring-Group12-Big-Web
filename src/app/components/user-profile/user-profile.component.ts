@@ -26,7 +26,8 @@ export class UserProfileComponent implements OnInit, OnChanges
     longitude: 0,
     latitude: 0,
     like: 0,
-    dislike:0
+    dislike:0,
+
   }
 
   eventForm: FormGroup;
@@ -107,7 +108,9 @@ export class UserProfileComponent implements OnInit, OnChanges
       longitude: this.eventForm.value['longitude'],
       latitude: this.eventForm.value['latitude'],
       like: 0,
-      dislike: 0
+      dislike: 0,
+      userlikelist: [],
+      userdislikelist: []
     };
     this.firebaseService.addEvent(data);
 
@@ -148,6 +151,67 @@ export class UserProfileComponent implements OnInit, OnChanges
   }
   */
 
+///////////////////////////
+/// event like dislike array
+  likeUpdate(event: Event) {
+
+    var likelen = event.userlikelist.length;
+    var dislikelen = event.userdislikelist.length;
+
+    if(likelen > dislikelen)
+      var len = likelen;
+    else
+      var len = dislikelen
+
+    for(var i = 0; i < len; i++)
+    {
+      if(event.userlikelist[i] == this.user.uid)
+          return;
+      else if(event.userdislikelist[i] == this.user.uid)
+      {
+          event.dislike--;
+          event.userdislikelist.splice(i, 1);
+      }
+    }
+
+    event.userlikelist[likelen] = this.user.uid;
+    event.like++;
+
+    this.firebaseService.updateEvent(event);
+  }
+
+  dislikeUpdate(event: Event) {
+
+    var likelen = event.userlikelist.length;
+    var dislikelen = event.userdislikelist.length;
+
+    if(likelen > dislikelen)
+      var len = likelen;
+    else
+      var len = dislikelen
+
+    for(var i = 0; i < len; i++)
+    {
+      if(event.userdislikelist[i] == this.user.uid)
+          return;
+      else if(event.userlikelist[i] == this.user.uid)
+      {
+          event.like--;
+          event.userlikelist.splice(i, 1);
+      }
+    }
+
+    event.userdislikelist[dislikelen] = this.user.uid;
+    event.dislike++;
+
+    this.firebaseService.updateEvent(event);
+
+    if(event.dislike - event.like >= 10)
+      this.firebaseService.deleteEvent(event);
+
+  }
+//////////////////////////////////
+// user like dislike array
   removeLikesEID(index) {
     this.user.likes.splice(index, 1);
     //this.firebaseService.updateUser(this.user);
@@ -158,7 +222,7 @@ export class UserProfileComponent implements OnInit, OnChanges
     //this.firebaseService.updateUser(this.user);
   }
 
-  likeUpdate(event: Event) {
+  likeUpdateUserArr(event: Event) {
 
     var likelen = this.user.likes.length;
     var dislikelen = this.user.dislikes.length;
@@ -187,7 +251,7 @@ export class UserProfileComponent implements OnInit, OnChanges
   }
 
 
-  dislikeUpdate(event: Event) {
+  dislikeUpdateUserArr(event: Event) {
 
     var likelen = this.user.likes.length;
     var dislikelen = this.user.dislikes.length;
@@ -218,6 +282,12 @@ export class UserProfileComponent implements OnInit, OnChanges
       this.firebaseService.deleteEvent(event);
   }
 
+  showLikeInPercent(event: Event)
+  {
+      var total = event.like + event.dislike;
+      var toShow = (event.like) / total * 100;
+      return toShow;
+  }
 
   buildForm() {
     this.eventForm = this.fb.group({

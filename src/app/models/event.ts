@@ -7,4 +7,6 @@ export interface Event{
   latitude?: number;
   like?: number;
   dislike?: number;
+  userlikelist?: string[] | null;
+  userdislikelist?: string[] | null;
 }

@@ -18,12 +18,13 @@ export class MapsEventsListComponent implements OnInit, OnChanges {
   @Input() longitude: any;
   @Input() user: User;
 
-  @Output() eventsChange = new EventEmitter<Event[]>(); 
+  @Output() eventsChange = new EventEmitter<Event[]>();
   @Output() flyTo = new EventEmitter<Event>();
+
 
   eventForm: FormGroup;
 
-  constructor(private fb: FormBuilder, 
+  constructor(private fb: FormBuilder,
     private firebaseService: FirebaseService) { }
 
   ngOnInit() { this.buildForm(); }
@@ -35,27 +36,27 @@ export class MapsEventsListComponent implements OnInit, OnChanges {
 	var updatedLongitude = changes["longitude"];
 	var updatedUser = changes["user"];
 
-	if(updatedEvents != null) 
-	{ 
-		this.events = updatedEvents.currentValue; 
+	if(updatedEvents != null)
+	{
+		this.events = updatedEvents.currentValue;
 	}
-	if(updatedLatitude != null) 
-	{ 
-		this.latitude = updatedLatitude.currentValue; 
+	if(updatedLatitude != null)
+	{
+		this.latitude = updatedLatitude.currentValue;
 		this.eventForm.patchValue({
 	        latitude: this.latitude
 	    });
 	}
-	if(updatedLongitude != null) 
-	{ 
-		this.longitude = updatedLongitude.currentValue; 
+	if(updatedLongitude != null)
+	{
+		this.longitude = updatedLongitude.currentValue;
 		this.eventForm.patchValue({
         	longitude: this.longitude
       	});
 	}
-	if(updatedUser != null) 
-	{ 
-		this.user = updatedUser.currentValue; 
+	if(updatedUser != null)
+	{
+		this.user = updatedUser.currentValue;
 	}
 	return;
   }
@@ -79,10 +80,7 @@ export class MapsEventsListComponent implements OnInit, OnChanges {
 
   flyToOnClick(event: Event) { this.flyTo.emit(event); }
 
-
-  like(): any { console.log("like function called"); }
-
-  registerEvent() 
+  registerEvent()
   {
     // users
     const data: Event = {
@@ -90,7 +88,11 @@ export class MapsEventsListComponent implements OnInit, OnChanges {
       name: this.eventForm.value['name'],
       description: this.eventForm.value['description'],
       longitude: this.longitude,
-      latitude: this.latitude
+      latitude: this.latitude,
+      like: 0,
+      dislike: 0,
+      userlikelist: [],
+      userdislikelist: []
     };
 
     this.firebaseService.addEvent(data);
@@ -98,5 +100,64 @@ export class MapsEventsListComponent implements OnInit, OnChanges {
     this.eventsChange.emit(this.events);
   }
 
+  ///////////////////////////
+  /// event like dislike array
+    likeUpdate(event: Event) {
+
+      var likelen = event.userlikelist.length;
+      var dislikelen = event.userdislikelist.length;
+
+      if(likelen > dislikelen)
+        var len = likelen;
+      else
+        var len = dislikelen
+
+      for(var i = 0; i < len; i++)
+      {
+        if(event.userlikelist[i] == this.user.uid)
+            return;
+        else if(event.userdislikelist[i] == this.user.uid)
+        {
+            event.dislike--;
+            event.userdislikelist.splice(i, 1);
+        }
+      }
+
+      event.userlikelist[likelen] = this.user.uid;
+      event.like++;
+
+      this.firebaseService.updateEvent(event);
+    }
+
+    dislikeUpdate(event: Event) {
+
+      var likelen = event.userlikelist.length;
+      var dislikelen = event.userdislikelist.length;
+
+      if(likelen > dislikelen)
+        var len = likelen;
+      else
+        var len = dislikelen
+
+      for(var i = 0; i < len; i++)
+      {
+        if(event.userdislikelist[i] == this.user.uid)
+            return;
+        else if(event.userlikelist[i] == this.user.uid)
+        {
+            event.like--;
+            event.userlikelist.splice(i, 1);
+        }
+      }
+
+      event.userdislikelist[dislikelen] = this.user.uid;
+      event.dislike++;
+
+      this.firebaseService.updateEvent(event);
+
+      if(event.dislike - event.like >= 10)
+        this.firebaseService.deleteEvent(event);
+        
+    }
 
 }
