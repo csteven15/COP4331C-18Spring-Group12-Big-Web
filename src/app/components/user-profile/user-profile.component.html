@@ -66,10 +66,10 @@
           <p>Latitude: {{event.latitude}}</p>
 
 
-          <input type="button"  class="coolButton" style="color:Green" value ="👍" (click)="likeUpdate(event)">
-          <input class="tinyBox" value = {{event.like}}>
-          <input type="button"  class="coolButton" style="color:Red" value ="👎" (click)="dislikeUpdate(event)">
-          <input class="tinyBox" value ={{event.dislike}}>
+          <input type="button"  class="btn btn-primary"  value ="👍" (click)="likeUpdate(event)">
+          <input class="tinyBox" value = {{event.likePercent}}>
+          <input type="button"  class="btn btn-primary"  value ="👎" (click)="dislikeUpdate(event)">
+          <input class="tinyBox" value ={{event.dislikePercent}}>
         </div>
       </div>
       <br>

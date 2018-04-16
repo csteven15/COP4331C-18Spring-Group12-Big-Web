@@ -108,6 +108,8 @@ export class UserProfileComponent implements OnInit, OnChanges
       latitude: this.eventForm.value['latitude'],
       like: 0,
       dislike: 0,
+      likePercent: 0,
+      dislikePercent: 0,
       userlikelist: [],
       userdislikelist: []
     };
@@ -176,6 +178,12 @@ export class UserProfileComponent implements OnInit, OnChanges
     event.userlikelist[likelen] = this.user.uid;
     event.like++;
 
+    var total = event.like + event.dislike;
+    var likePercentToShow = event.like / total * 100;
+    var dislikePercentToShow = event.dislike / total * 100;
+    event.likePercent = Math.round(likePercentToShow);
+    event.dislikePercent = Math.round(dislikePercentToShow);
+
     this.firebaseService.updateEvent(event);
   }
 
@@ -202,6 +210,13 @@ export class UserProfileComponent implements OnInit, OnChanges
 
     event.userdislikelist[dislikelen] = this.user.uid;
     event.dislike++;
+
+    var total = event.like + event.dislike;
+    var likePercentToShow = event.like / total * 100;
+    var dislikePercentToShow = event.dislike / total * 100;
+    event.likePercent = Math.round(likePercentToShow);
+    event.dislikePercent = Math.round(dislikePercentToShow);
+
 
     this.firebaseService.updateEvent(event);
 
