@@ -38,3 +38,8 @@
   vertical-align: middle;
 
 }
+
+#eventsList {
+  overflow-y:scroll;
+  height:50vh;
+}
