@@ -50,7 +50,7 @@ export class UserRegisterComponent implements OnInit {
   registerUser() {
     // users
     this.firebaseService.emailSignUp(this.userForm.value['firstname'], this.userForm.value['lastname'], this.userForm.value['email'], this.userForm.value['password']);
-    //this.router.navigate(['/user-login']);
+    // this.router.navigate(['/user-login']);
     this.createComponent.emit('LoginComponent');
     return;
   }
