@@ -1,4 +1,4 @@
-export interface Event{
+export interface Event {
   eid?: string;
   uid?: string;
   name?: string | null;
@@ -7,4 +7,8 @@ export interface Event{
   latitude?: number;
   like?: number;
   dislike?: number;
+  likePercent?: number;
+  dislikePercent?: number;
+  userlikelist?: string[] | null;
+  userdislikelist?: string[] | null;
 }

@@ -16,23 +16,20 @@ import { UserRegisterComponent } from './components/user-register/user-register.
 import { UserLoginComponent } from './components/user-login/user-login.component';
 import { FirebaseService } from './services/firebase.service';
 import { NotifyService } from './services/notify.service';
-import { UserFormComponent } from './components/user-form/user-form.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
-import { UserDashboardComponent } from './components/user-dashboard/user-dashboard.component';
 import { MapsEventsListComponent } from './components/maps-events-list/maps-events-list.component';
+import { LandingComponent } from './components/landing/landing.component';
 
 
 const appRoutes: Routes = [
-  {path: '', component: AppComponent},
-  {path: 'user-register', component: UserRegisterComponent},
-  {path: 'user-login', component: UserLoginComponent},
-  {path: 'user-form', component: UserFormComponent},
-  {path: 'user-profile', component: UserProfileComponent},
-  {path: 'user-dashboard', component: UserDashboardComponent}
-]
+  { path: '', component: AppComponent },
+  { path: 'user-register', component: UserRegisterComponent },
+  { path: 'user-login', component: UserLoginComponent },
+  { path: 'user-profile', component: UserProfileComponent }
+];
 
 @NgModule({
   declarations: [
@@ -42,10 +39,9 @@ const appRoutes: Routes = [
     MapsComponent,
     UserRegisterComponent,
     UserLoginComponent,
-    UserFormComponent,
     UserProfileComponent,
-    UserDashboardComponent,
-    MapsEventsListComponent
+    MapsEventsListComponent,
+    LandingComponent
   ],
   imports: [
     BrowserModule,
@@ -67,6 +63,7 @@ const appRoutes: Routes = [
     HomeComponent,
     UserRegisterComponent,
     UserLoginComponent,
-    UserProfileComponent]
+    UserProfileComponent,
+    LandingComponent]
 })
 export class AppModule { }

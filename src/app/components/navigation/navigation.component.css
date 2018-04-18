@@ -1,24 +1,23 @@
-.navbar-brand{
-    font-family: Croissant One;
-    font-size:30pt;
-    line-height:10pt;
-    text-shadow: 1px 1px 25px rgb(134, 134, 134);
-
+.navbar-brand {
+  font-family: Croissant One;
+  font-size: 30pt;
+  line-height: 10pt;
+  text-shadow: 1px 1px 25px rgb(134, 134, 134);
 }
 
-
-button{
-    font-family:Croissant One;
-    font-size:12pt;
-    letter-spacing:3px;
-    color:#FFF;
-    background-color:transparent;
-    border:none;
+button {
+  font-family: Croissant One;
+  font-size: 12pt;
+  letter-spacing: 3px;
+  color: #FFF;
+  background-color: transparent;
+  border: none;
 }
 
-button:hover,.navbar-brand:hover{
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    text-shadow: 1px 1px 25px rgba(255, 255, 48, 0.945);
-
+button:hover,
+.navbar-brand:hover {
+  -webkit-transition-duration: 0.4s;
+  /* Safari */
+  transition-duration: 0.4s;
+  text-shadow: 1px 1px 25px rgba(255, 255, 48, 0.945);
 }

@@ -19,10 +19,9 @@ export class NavigationComponent {
     private router: Router,
     public afAuth: AngularFireAuth,
     private firebaseService: FirebaseService
-    ) { }
+  ) { }
 
-  changeComponent(type: string)
-  {
+  changeComponent(type: string) {
     this.createComponent.emit(type);
     return;
   }
