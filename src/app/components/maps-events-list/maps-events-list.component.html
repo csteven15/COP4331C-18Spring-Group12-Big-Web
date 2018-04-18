@@ -1,52 +1,86 @@
-  <div *ngIf="firebaseService.user | async; then authenticated else guest"></div>
-<h6>List of Events</h6>
-<div *ngFor="let event of events">
-	<div class="card mb-4" style="padding: 10px;">
-	  <div class="card-block">
-	    <h6 class="card-title">Event Name: {{event.name}} </h6>
-	    <p>Description: {{event.description}}</p>
-	    <button class="btn btn-primary" (click)="flyToOnClick(event)">Fly Here!</button>
-	    <button *ngIf="user != null" class="btn btn-primary" (click)="deleteEvent(event)">Delete</button>
-      <p></p>
-      <input type="button"  class="btn btn-primary" value ="👍" (click)="likeUpdate(event)">
-      <input class="tinyBox" value ={{event.likePercent}}>
-      <input type="button"  class="btn btn-primary" value ="👎" (click)="dislikeUpdate(event)">
-      <input class="tinyBox" value ={{event.dislikePercent}}>
-	  </div>
-	</div>
-</div>
-
+<div *ngIf="firebaseService.user | async; then authenticated else guest"></div>
 
 <ng-template #guest>
-  <h6>Welcome, Guest</h6>
-  <p>Login to add events started...</p>
+  <div id="ghettoImSorryagain"></div>
+<div class="welcome_unauth">
+    <div class="card mb-4" style="padding: 10px;">
+
+<h6>Welcome, Guest.</h6>
+<p>Please login to add events!</p>
+    </div>
+</div>
+<br>
+<h1>List of events</h1>
+<div id="events_unauthed">
+    <div *ngFor="let event of events">
+      <div class="card mb-4" style="padding: 10px;">
+        <div class="card-block">
+          <div class="title"><b>{{event.name}}</b> </div>
+          <p>“ {{event.description}} ”</p>
+          <button class="btn btn-primary" (click)="flyToOnClick(event)">Fly Here!</button>
+          <button *ngIf="user != null" class="btn btn-primary" (click)="deleteEvent(event)">Delete</button>
+        </div>
+      </div>
+    </div>
+    </div>
 </ng-template>
 
 <ng-template #authenticated>
-  <h6>Welcome, {{ user.firstname }} {{user.lastname}}</h6>
-  <div class="card mb-4" style="padding: 10px;">
-    <form [formGroup]="eventForm" (ngSubmit)="registerEvent()">
-      <div *ngIf="latitude && longitude; then point else nopoint">
+  <div id="ghettoImSorry"></div>
+
+  <div class ="welcome_auth">
+
+      <div class="card mb-4" style="padding: 10px;">
+
+<h6>Hi, {{ user.firstname }}!</h6>
+
+
+  <form [formGroup]="eventForm" (ngSubmit)="registerEvent()">
+    <div *ngIf="latitude && longitude; then point else nopoint">
+    </div>
+    <ng-template #point>
+      <h6>Point selected on map</h6>
+    </ng-template>
+    <ng-template #nopoint>
+      <h6>Click where you would like to drop a pin.</h6>
+    </ng-template>
+    <div class="form-group">
+      <input type="name" id="name" class="form-control" formControlName="name" placeholder="Name of event">
+    </div>
+    <div class="form-group">
+      <input type="description" id="description" class="form-control" formControlName="description" placeholder="Description of event">
+    </div>
+    <div class="form-group" style="display: none;">
+      <input type="latitude" id="latitude" class="form-control" formControlName="latitude">
+    </div>
+    <div class="form-group" style="display: none;">
+      <input type="longitude" id="longitude" class="form-control" formControlName="longitude">
+    </div>
+    <div align="center">
+    <button [disabled]="!eventForm.valid" type="submit" class="btn btn-primary">Add Event</button>
+    </div>
+  </form>
+</div>
+
+</div>
+<br>
+<h1>List of events</h1>
+
+<div id="events_authed">
+  <div *ngFor="let event of events">
+    <div class="card mb-4" style="padding: 10px;">
+      <div class="card-block">
+        <div class="title"><b>{{event.name}}</b> </div>
+        <p>“ {{event.description}} ”</p>
+        <button class="btn btn-primary" (click)="flyToOnClick(event)">Fly Here!</button>
+        <button *ngIf="user != null" class="btn btn-primary" (click)="deleteEvent(event)">Delete</button>
+        <p></p>
+        <input type="button"  class="btn btn-primary" value ="👍" (click)="likeUpdate(event)">
+        <input class="tinyBox" value ={{event.likePercent}}>
+        <input type="button"  class="btn btn-primary" value ="👎" (click)="dislikeUpdate(event)">
+        <input class="tinyBox" value ={{event.dislikePercent}}>
       </div>
-      <ng-template #point>
-        <h6>Point selected on map</h6>
-      </ng-template>
-      <ng-template #nopoint>
-        <h6>Please select a point on map</h6>
-      </ng-template>
-      <div class="form-group">
-        <input type="name" id="name" class="form-control" formControlName="name" placeholder="Name of event">
-      </div>
-      <div class="form-group">
-        <input type="description" id="description" class="form-control" formControlName="description" placeholder="Description of event">
-      </div>
-      <div class="form-group" style="display: none;">
-        <input type="latitude" id="latitude" class="form-control" formControlName="latitude">
-      </div>
-      <div class="form-group" style="display: none;">
-        <input type="longitude" id="longitude" class="form-control" formControlName="longitude">
-      </div>
-      <button [disabled]="!eventForm.valid" type="submit" class="btn btn-primary">Add Event</button>
-    </form>
+    </div>
+  </div>
   </div>
 </ng-template>

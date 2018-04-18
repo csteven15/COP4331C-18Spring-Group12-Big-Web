@@ -19,40 +19,16 @@
 <!-- User logged in -->
 <ng-template #authenticated>
   <div class="container" *ngIf="firebaseService.user | async as user">
-    <h3>Welcome, {{ user.firstname }} {{user.lastname}}</h3>
+    <h3>{{ user.firstname }} {{user.lastname}}</h3>
     <p>UID: {{ user.uid }}</p>
     <button class="btn btn-primary" (click)="firebaseService.signOut()">Logout</button>
-    <hr>
-    <form [formGroup]="eventForm" (ngSubmit)="registerEvent()">
-      <h3>Coordinates</h3>
-      <div class="form-group">
-        <label for="name">Event Name</label>
-        <br>
-        <input type="name" id="name" class="input" formControlName="name">
-      </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <br>
-        <input type="description" id="description" class="input" formControlName="description" required>
-      </div>
-      <div class="form-group">
-        <label for="longitude">Longitude</label>
-        <br>
-        <input type="longitude" id="longitude" class="input" formControlName="longitude">
-      </div>
-      <div class="form-group">
-        <label for="latitude">Latitude</label>
-        <br>
-        <input type="latitude" id="latitude" class="input" formControlName="latitude">
-      </div>
-      <button type="submit" class="btn btn-primary">Add Event</button>
-    </form>
+
   </div>
 </ng-template>
 <br>
 
 <br><br><br>
-
+<div id="eventsList">
 <div *ngIf="events?.length > 0" class="container">
   <div class="card-deck">
     <div *ngFor="let event of events" class="collection">
@@ -66,10 +42,12 @@
           <p>Latitude: {{event.latitude}}</p>
 
 
-          <input type="button"  class="btn btn-primary"  value ="👍" (click)="likeUpdate(event)">
-          <input class="tinyBox" value = {{event.likePercent}}>
-          <input type="button"  class="btn btn-primary"  value ="👎" (click)="dislikeUpdate(event)">
-          <input class="tinyBox" value ={{event.dislikePercent}}>
+                    <input type="button"  class="btn btn-primary"  value ="👍" (click)="likeUpdate(event)">
+                    <input class="tinyBox" value = {{event.likePercent}}>
+                    <input type="button"  class="btn btn-primary"  value ="👎" (click)="dislikeUpdate(event)">
+                    <input class="tinyBox" value ={{event.dislikePercent}}>
+
+</div>
         </div>
       </div>
       <br>
