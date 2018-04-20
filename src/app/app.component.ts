@@ -150,7 +150,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const factory = this.resolver.resolveComponentFactory(LandingComponent);
     this.componentRef = this.container.createComponent(factory);
     this.componentRef.instance.events = this.events;
-    // this.componentRef.instance.createComponent.subscribe(type => this.createComponent(type));
+    this.componentRef.instance.createComponent.subscribe(type => this.createComponent(type));
   }
 
   eventsChange(updatedEvents: Event[]) {
