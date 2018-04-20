@@ -7,25 +7,30 @@
 
       <h6>Welcome, Guest.</h6>
       <p>Please login to add events!</p>
+      <input type="text" [(ngModel)]="term" class="form-control" placeholder="Search for an event">
     </div>
   </div>
   <br>
   <h1>List of events</h1>
   <div id="events_unauthed">
-    <div *ngFor="let event of events">
-      <div class="card mb-4" style="padding: 10px;">
-        <div class="card-block">
-          <div class="title">
-            <b>{{event.name}}</b>
+      <div *ngIf="events?.length > 0" class="container">
+          <div *ngFor="let event of events | filter:term" class="collection">
+            <div style="padding: 10px; border: black 2px solid;">
+              <div class="d-flex justify-content-between">
+                <div>{{event.name}}</div>
+              </div>
+              <hr>
+              <div class="d-flex justify-content-start">
+                <button disabled class="bottom btn btn-success" (click)="likeUpdate(event)">👍</button>
+                <p class="bottom">Likes: {{event.like}}</p>
+                <button disabled class="bottom btn btn-danger" (click)="dislikeUpdate(event)">👎</button>
+                <p class="bottom">Dislikes: {{event.dislike}}</p>
+              </div>
+            </div>
           </div>
-          <p>“ {{event.description}} ”</p>
-          <button class="btn btn-primary" (click)="flyToOnClick(event)">Fly Here!</button>
-          <button *ngIf="user != null" class="btn btn-primary" (click)="deleteEvent(event)">Delete</button>
-          <p class="tinyBox">{{event.likePercent}}</p>
-          <p class="tinyBox">{{event.dislikePercent}}</p>
+    
+          <br>
         </div>
-      </div>
-    </div>
   </div>
 </ng-template>
 
@@ -36,7 +41,8 @@
 
     <div class="card mb-4" style="padding: 10px;">
 
-      <h6>Hi, {{ user.firstname }}!</h6>
+      <h6>Hi, {{ user.firstname }} {{ user.lastname }}!</h6>
+      <input type="text" [(ngModel)]="term" class="form-control" placeholder="Search for an event">
 
 
       <form [formGroup]="eventForm" (ngSubmit)="registerEvent()">
@@ -50,9 +56,6 @@
         </ng-template>
         <div class="form-group">
           <input type="name" id="name" class="form-control" formControlName="name" placeholder="Name of event">
-        </div>
-        <div class="form-group">
-          <input type="description" id="description" class="form-control" formControlName="description" placeholder="Description of event">
         </div>
         <div class="form-group" style="display: none;">
           <input type="latitude" id="latitude" class="form-control" formControlName="latitude">
@@ -71,21 +74,23 @@
   <h1>List of events</h1>
 
   <div id="events_authed">
-    <div *ngFor="let event of events">
-      <div class="card mb-4" style="padding: 10px;">
-        <div class="card-block">
-          <div class="title">
-            <b>{{event.name}}</b>
+      <div *ngIf="events?.length > 0" class="container">
+          <div *ngFor="let event of events | filter:term" class="collection">
+            <div style="padding: 10px; border: black 2px solid;">
+              <div class="d-flex justify-content-between">
+                <div>{{event.name}}</div>
+              </div>
+              <hr>
+              <div class="d-flex justify-content-start">
+                <button class="bottom btn btn-success" (click)="likeUpdate(event)">👍</button>
+                <p class="bottom">{{event.like}}</p>
+                <button class="bottom btn btn-danger" (click)="dislikeUpdate(event)">👎</button>
+                <p class="bottom">{{event.dislike}}</p>
+              </div>
+            </div>
           </div>
-          <p>“ {{event.description}} ”</p>
-          <button class="btn btn-primary" (click)="flyToOnClick(event)">Fly Here!</button>
-          <button *ngIf="user != null" class="btn btn-primary" (click)="deleteEvent(event)">Delete</button>
-          <input type="button" class="btn btn-primary" value="👍" (click)="likeUpdate(event)">
-          <p class="tinyBox">{{event.likePercent}}</p>
-          <input type="button" class="btn btn-primary" value="👎" (click)="dislikeUpdate(event)">
-          <p class="tinyBox">{{event.dislikePercent}}</p>
+    
+          <br>
         </div>
-      </div>
-    </div>
   </div>
 </ng-template>

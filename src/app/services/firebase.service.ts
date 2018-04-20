@@ -38,17 +38,6 @@ export class FirebaseService {
         }
       });
 
-      // this.eventsCollection = this.afs.collection('events');
-      //
-      // this.events = this.eventsCollection.snapshotChanges().map(changes => {
-      //   return changes.map(a => {
-      //     const data = a.payload.doc.data() as Event;
-      //     data.eid = a.payload.doc.id;
-      //     return data;
-      //   });
-      // });
-
-
     this.eventsCollection = this.afs.collection('events');
 
     this.events = this.eventsCollection.snapshotChanges().map(changes => {
@@ -114,8 +103,6 @@ export class FirebaseService {
     .then((user) => {
       user.firstname = firstname;
       user.lastname = lastname;
-      user.likes = [];
-      user.dislikes = [];
       this.notify.update('Welcome to Firestarter!!!', 'success');
       return this.updateUserData(user); // if using firestore
     })
@@ -162,19 +149,11 @@ export class FirebaseService {
     if (user.lastname === '') {
       user.lastname = 'N/A';
     }
-    if (user.likes == null) {
-      user.likes = [];
-    }
-    if (user.dislikes == null) {
-      user.dislikes = [];
-    }
     const data: User = {
       uid: user.uid,
       firstname: user.firstname,
       lastname: user.lastname,
-      email: user.email || null,
-      likes: user.likes || null,
-      dislikes: user.dislikes || null
+      email: user.email || null
     };
     return userRef.set(data);
   }

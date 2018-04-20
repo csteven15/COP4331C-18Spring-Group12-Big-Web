@@ -18,10 +18,12 @@ import { FirebaseService } from './services/firebase.service';
 import { NotifyService } from './services/notify.service';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
-import { FlashMessagesModule } from 'angular2-flash-messages';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { MapsEventsListComponent } from './components/maps-events-list/maps-events-list.component';
 import { LandingComponent } from './components/landing/landing.component';
+import { NgbModule, NgbCarouselConfig } from '@ng-bootstrap/ng-bootstrap';
+import { NotificationMessageComponent } from './components/notification-message/notification-message.component';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 
 const appRoutes: Routes = [
@@ -41,7 +43,8 @@ const appRoutes: Routes = [
     UserLoginComponent,
     UserProfileComponent,
     MapsEventsListComponent,
-    LandingComponent
+    LandingComponent,
+    NotificationMessageComponent
   ],
   imports: [
     BrowserModule,
@@ -54,9 +57,11 @@ const appRoutes: Routes = [
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDuu4TRrEA0mMTH3pf4tlbylX0JnpOFVqI'
     }),
-    FlashMessagesModule.forRoot()
+    NgbModule,
+    HttpClientModule,
+    Ng2SearchPipeModule
   ],
-  providers: [FirebaseService, NotifyService],
+  providers: [FirebaseService, NotifyService, NgbCarouselConfig],
   bootstrap: [AppComponent],
   entryComponents: [
     NavigationComponent,

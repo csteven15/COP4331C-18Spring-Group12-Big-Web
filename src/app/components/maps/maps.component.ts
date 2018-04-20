@@ -29,7 +29,6 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
     eid: '',
     uid: '',
     name: '',
-    description: '',
     longitude: 0,
     latitude: 0,
     like: 0,
@@ -88,8 +87,7 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
         // console.log(this.events[i])
         var lng = this.events[i].longitude;
         var lat = this.events[i].latitude;
-        var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p><p class="wordwrap">' + this.events[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
-
+        var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p></div>'
         var marker = new L.marker({ lng, lat })
           .bindPopup(popupContent, { maxWidth: 250 })
           .addTo(this.map);
@@ -145,16 +143,11 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
         // console.log(this.events[i])
         var lng = this.events[i].longitude;
         var lat = this.events[i].latitude;
-        var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p><p class="wordwrap">' + this.events[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
+        var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p></div>'
 
         var marker = new L.marker({ lng, lat })
           .bindPopup(popupContent, { maxWidth: 250 })
           .addTo(this.map);
-        // var likeButton = this.elementRef.nativeElement.querySelector(".like-button");
-        // if(likeButton != null)
-        // {
-        //   likeButton.addEventListener('click', this.like())
-        // }
       }
       return;
     }

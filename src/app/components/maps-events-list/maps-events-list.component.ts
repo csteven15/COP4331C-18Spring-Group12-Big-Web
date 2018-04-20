@@ -4,6 +4,8 @@ import { FirebaseService } from '../../services/firebase.service';
 import { Observable } from 'rxjs/Observable';
 import { Event } from '../../models/event';
 import { User } from '../../models/user';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
+
 
 // TODO: Move all form functionality to separate component
 
@@ -58,7 +60,6 @@ export class MapsEventsListComponent implements OnInit, OnChanges {
   buildForm() {
     this.eventForm = this.fb.group({
       'name': ['', [Validators.required]],
-      'description': ['', [Validators.required]],
       'latitude': ['', [Validators.required]],
       'longitude': ['', [Validators.required]]
     });
@@ -74,17 +75,20 @@ export class MapsEventsListComponent implements OnInit, OnChanges {
   flyToOnClick(event: Event) { this.flyTo.emit(event); }
 
 
-  like(): any { console.log('like function called'); }
-
   registerEvent() {
     // users
     const data: Event = {
-      uid: this.user.uid,
       name: this.eventForm.value['name'],
-      description: this.eventForm.value['description'],
+      uid: this.user.uid,
       longitude: this.longitude,
-      latitude: this.latitude
+      latitude: this.latitude,
+      like: 1,
+      dislike: 0,
+      userlikelist: [],
+      userdislikelist: []
     };
+
+    data.userlikelist.push(this.user.uid);
 
     this.firebaseService.addEvent(data);
     this.events.push(data);

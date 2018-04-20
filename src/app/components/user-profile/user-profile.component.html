@@ -2,7 +2,6 @@
 <br>
 <br>
 <br>
-<br>
 <div *ngIf="firebaseService.user | async; then authenticated else guest">
   <!-- template will replace this div -->
 </div>
@@ -23,42 +22,32 @@
 <!-- User logged in -->
 <ng-template #authenticated>
   <div class="container" *ngIf="firebaseService.user | async as user">
-    <h3>{{ user.firstname }} {{user.lastname}}</h3>
-    <p>UID: {{ user.uid }}</p>
-    <button class="btn btn-primary" (click)="firebaseService.signOut()">Logout</button>
-
+    <h3>Welcome, {{ user.firstname }} {{user.lastname}}</h3>
+    <input type="text" [(ngModel)]="term" class="form-control" placeholder="Search for an event">
+    <hr>
   </div>
-</ng-template>
-<br>
-
-<br>
-<br>
-<br>
-<div id="eventsList">
-  <div *ngIf="events?.length > 0" class="container">
-    <div class="card-deck">
-      <div *ngFor="let event of events" class="collection">
-        <div class="card mb-4" style="width: 20em; padding: 10px;">
-          <div class="card-block">
-            <h5 class="card-title">Event Name: {{event.name}} </h5>
-            <p>EID: {{event.eid}}</p>
-            <p>UID: {{event.uid}}</p>
-            <p>Description: {{event.description}}</p>
-            <p>Longitude: {{event.longitude}}</p>
-            <p>Latitude: {{event.latitude}}</p>
-
-            <!--<input type="button"  class="coolButton" style="color:Green" value ="Adding data" (click)="testingEID()">
-          <p></p>
-          -->
-            <input type="button" class="coolButton" style="color:Green" value="👍" (click)="likeUpdate(event)">
-            <input class="tinyBox" value={{event.like}}>
-            <input type="button" class="coolButton" style="color:Red" value="👎" (click)="dislikeUpdate(event)">
-            <input class="tinyBox" value={{event.dislike}}>
-
+  <div id="eventsList">
+    <div *ngIf="events?.length > 0" class="container">
+      <div *ngFor="let event of events | filter:term" class="collection">
+        <div style="padding: 10px; border: black 2px solid;">
+          <div class="d-flex justify-content-between">
+            <div>Event Name: {{event.name}}</div>
+            <div>
+              <button class="bottom btn btn-light" (click)="deleteEvent(event)">X</button>
+            </div>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-start">
+            <button class="bottom btn btn-success" (click)="likeUpdate(event)">👍</button>
+            <p class="bottom">{{event.like}}</p>
+            <button class="bottom btn btn-danger" (click)="dislikeUpdate(event)">👎</button>
+            <p class="bottom">{{event.dislike}}</p>
           </div>
         </div>
       </div>
+
       <br>
     </div>
   </div>
-</div>
+
+</ng-template>

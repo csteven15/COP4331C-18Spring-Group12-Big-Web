@@ -16,6 +16,11 @@
   height: 32px;
 }
 
+.bottom {
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
 h1 {
   font-family: Croissant One;
   font-size: 20pt;

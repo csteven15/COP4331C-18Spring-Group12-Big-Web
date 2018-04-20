@@ -32,7 +32,7 @@ export class UserRegisterComponent implements OnInit {
     'password': {
       'required': 'Password is required.',
       'pattern': 'Password must be include at one letter and one number.',
-      'minlength': 'Password must be at least 4 characters long.',
+      'minlength': 'Password must be at least 6 characters long.',
       'maxlength': 'Password cannot be more than 40 characters long.',
     },
   };
