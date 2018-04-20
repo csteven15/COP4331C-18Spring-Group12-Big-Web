@@ -16,8 +16,7 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css']
 })
-export class UserProfileComponent implements OnInit, OnChanges
-{
+export class UserProfileComponent implements OnInit, OnChanges {
   @Input() events: Event[];
   @Output() onEventsChange = new EventEmitter<Event[]>();
 
@@ -56,20 +55,17 @@ export class UserProfileComponent implements OnInit, OnChanges
     // });
   }
 
-  ngOnChanges(changes: SimpleChanges)
-  {
-    console.log("Profile ngOnChanges called");
-    var updatedEvents = changes["events"].currentValue;
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('Profile ngOnChanges called');
+    const updatedEvents = changes["events"].currentValue;
     // if(this.events == updatedEvents || updatedEvents == null) { return; }
     this.events = updatedEvents;
     console.log("Profile events after ngOnChanges: ");
     console.log(this.events);
 
-    var userEvents = []
-    for (var i = 0; i < this.events.length; i++)
-    {
-      if (this.events[i].uid == this.user.uid)
-        {
+    const userEvents = [];
+    for (let i = 0; i < this.events.length; i++) {
+      if (this.events[i].uid === this.user.uid) {
           userEvents.push(this.events[i]);
         }
     }

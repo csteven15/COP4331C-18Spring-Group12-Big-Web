@@ -7,30 +7,32 @@
 
       <h6>Welcome, Guest.</h6>
       <p>Please login to add events!</p>
-      <input type="text" [(ngModel)]="term" class="form-control" placeholder="Search for an event">
     </div>
   </div>
   <br>
   <h1>List of events</h1>
+  <br>
+  <hr>
+  <input type="text" [(ngModel)]="term" class="form-control" placeholder="Search for an event">
   <div id="events_unauthed">
-      <div *ngIf="events?.length > 0" class="container">
-          <div *ngFor="let event of events | filter:term" class="collection">
-            <div style="padding: 10px; border: black 2px solid;">
-              <div class="d-flex justify-content-between">
-                <div>{{event.name}}</div>
-              </div>
-              <hr>
-              <div class="d-flex justify-content-start">
-                <button disabled class="bottom btn btn-success" (click)="likeUpdate(event)">👍</button>
-                <p class="bottom">Likes: {{event.like}}</p>
-                <button disabled class="bottom btn btn-danger" (click)="dislikeUpdate(event)">👎</button>
-                <p class="bottom">Dislikes: {{event.dislike}}</p>
-              </div>
-            </div>
+    <div *ngIf="events?.length > 0" class="container">
+      <div *ngFor="let event of events | filter:term" class="collection">
+        <div style="padding: 10px; border: black 2px solid;">
+          <div class="d-flex justify-content-between">
+            <div>{{event.name}}</div>
           </div>
-    
-          <br>
+          <hr>
+          <div class="d-flex justify-content-start">
+            <button disabled class="bottom btn btn-success" (click)="likeUpdate(event)">👍</button>
+            <p class="bottom">Likes: {{event.like}}</p>
+            <button disabled class="bottom btn btn-danger" (click)="dislikeUpdate(event)">👎</button>
+            <p class="bottom">Dislikes: {{event.dislike}}</p>
+          </div>
         </div>
+      </div>
+
+      <br>
+    </div>
   </div>
 </ng-template>
 
@@ -42,8 +44,6 @@
     <div class="card mb-4" style="padding: 10px;">
 
       <h6>Hi, {{ user.firstname }} {{ user.lastname }}!</h6>
-      <input type="text" [(ngModel)]="term" class="form-control" placeholder="Search for an event">
-
 
       <form [formGroup]="eventForm" (ngSubmit)="registerEvent()">
         <div *ngIf="latitude && longitude; then point else nopoint">
@@ -71,26 +71,29 @@
 
   </div>
   <br>
+  <br><br>
   <h1>List of events</h1>
-
+  <br>
+  <hr>
+  <input type="text" [(ngModel)]="term" class="form-control" placeholder="Search for an event">
   <div id="events_authed">
-      <div *ngIf="events?.length > 0" class="container">
-          <div *ngFor="let event of events | filter:term" class="collection">
-            <div style="padding: 10px; border: black 2px solid;">
-              <div class="d-flex justify-content-between">
-                <div>{{event.name}}</div>
-              </div>
-              <hr>
-              <div class="d-flex justify-content-start">
-                <button class="bottom btn btn-success" (click)="likeUpdate(event)">👍</button>
-                <p class="bottom">{{event.like}}</p>
-                <button class="bottom btn btn-danger" (click)="dislikeUpdate(event)">👎</button>
-                <p class="bottom">{{event.dislike}}</p>
-              </div>
-            </div>
+    <div *ngIf="events?.length > 0" class="container">
+      <div *ngFor="let event of events | filter:term" class="collection">
+        <div style="padding: 10px; border: black 2px solid;">
+          <div class="d-flex justify-content-between">
+            <div>{{event.name}}</div>
           </div>
-    
-          <br>
+          <hr>
+          <div class="d-flex justify-content-start">
+            <button class="bottom btn btn-success" (click)="likeUpdate(event)">👍</button>
+            <p class="bottom">{{event.like}}</p>
+            <button class="bottom btn btn-danger" (click)="dislikeUpdate(event)">👎</button>
+            <p class="bottom">{{event.dislike}}</p>
+          </div>
         </div>
+      </div>
+
+      <br>
+    </div>
   </div>
 </ng-template>
