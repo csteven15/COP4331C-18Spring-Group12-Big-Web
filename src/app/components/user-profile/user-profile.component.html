@@ -1,3 +1,5 @@
+
+<div id="ghettoimsorry"></div>
 <br>
 <br>
 <br>
@@ -6,12 +8,13 @@
   <!-- template will replace this div -->
 </div>
 
-
 <!-- User NOT logged in -->
 <ng-template #guest>
+  <div class="welcome">
   <h3>Welcome, Guest</h3>
-  <p>Login to add events started...</p>
-
+  <hr>
+  <p>Please login to get started.</p>
+  </div>
   <!-- <button (click)="firebaseService.googleLogin()">
         <i class="fa fa-google"></i> Connect Google
     </button> -->
@@ -21,32 +24,35 @@
 
 <!-- User logged in -->
 <ng-template #authenticated>
-  <div class="container" *ngIf="firebaseService.user | async as user">
-    <h3>Welcome, {{ user.firstname }} {{user.lastname}}</h3>
-    <input type="text" [(ngModel)]="term" class="form-control" placeholder="Search for an event">
+  <div class="welcome" *ngIf="firebaseService.user | async as user">
+    <h3>{{ user.firstname }} {{user.lastname}}'s Profile</h3>
     <hr>
+    <b>Email:</b> {{ user.email }}<br>
+    <b>User ID:</b> {{ user.ID}}
   </div>
+
+  <h1>My Active Events</h1>
+<input type="text" [(ngModel)]="term" style="width:81vw;position:relative;left:10vw;" class="form-control" placeholder="Search for an event...">
+
   <div id="eventsList">
     <div *ngIf="events?.length > 0" class="container">
       <div *ngFor="let event of events | filter:term" class="collection">
-        <div style="padding: 10px; border: black 2px solid;">
-          <div class="d-flex justify-content-between">
-            <div>Event Name: {{event.name}}</div>
-            <div>
-              <button class="bottom btn btn-light" (click)="deleteEvent(event)">X</button>
-            </div>
-          </div>
-          <hr>
-          <div class="d-flex justify-content-start">
-            <button class="bottom btn btn-success" (click)="likeUpdate(event)">👍</button>
-            <p class="bottom">{{event.like}}</p>
-            <button class="bottom btn btn-danger" (click)="dislikeUpdate(event)">👎</button>
-            <p class="bottom">{{event.dislike}}</p>
-          </div>
+        <div class="card mb-4" style="margin:20px;height:20vh;width:25vw; align:center;float:left;">
+            <div><b>{{event.name}}</b></div>
+          <br>
+          <table>
+              <tr>
+              <button class="up" (click)="likeUpdate(event)">🌟</button>
+               {{event.like}}
+              　　
+              <button class="down" (click)="dislikeUpdate(event)">💥</button>
+               {{event.dislike}}
+              </tr>
+         </table>
+         <br>
+         <button class="del" (click)="deleteEvent(event)">delete?</button>
         </div>
-      </div>
-
-      <br>
+        </div>
     </div>
   </div>
 

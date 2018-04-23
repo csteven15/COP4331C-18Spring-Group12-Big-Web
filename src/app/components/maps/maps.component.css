@@ -1,9 +1,10 @@
 
 #mapid {
-  height:92.5vh;
+  height:93vh;
   width:70vw;
   left:-15px;
-  top:-19px;
+  top:-24px;
+  z-index:100;
   /* position:fixed; */
 }
 .row {

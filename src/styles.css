@@ -11,11 +11,27 @@
   /* IE */
 }
 
+.prim{
+  background-color:#FFD700;
+  border: #FFD700;
+  border-radius:6px;
+  padding: 15px 32px;
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
+
+.prim:hover {
+  background-color: #998100; 
+  color: white;
+}
+
 body,
 html {
   overflow: hidden;
   height: 100%;
   font-family: PT Sans;
+  text-align:center;
   /*background-color: #495159;*/
   /* background-color: #fff; */
 }

@@ -19,7 +19,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class LandingComponent implements OnInit {
   @Output() createComponent = new EventEmitter<string>();
-  images: string[] = ['https://www.ucf.edu/files/2012/08/regional-campuses.jpg', 'https://www.ucf.edu/files/2012/08/downtown.jpg', 'https://www.ucffoundation.org/view.image?Id=620'];
+  images: string[] = ['https://www.ucf.edu/files/2012/08/regional-campuses.jpg', 'https://www.ucf.edu/files/2012/08/downtown.jpg', 'https://www.ucffoundation.org/view.image?Id=620', 
+'https://today.ucf.edu/files/2013/02/IMG_9866-e1361286778150.jpg'];
 
 
   constructor(

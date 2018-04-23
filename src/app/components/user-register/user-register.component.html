@@ -1,6 +1,7 @@
+<div id="bg"></div>
+
 <br><br><br><br>
-<div class="container">
-  <div class="jumbotron vertical-center text-center" style="width: 50%;">
+<div class="mid">
     <h4>Register with Email</h4>
     <br>
     <form [formGroup]="userForm" (ngSubmit)="registerUser()">
@@ -23,9 +24,9 @@
         </div>
       </div>
 
-      <button type="submit" class="btn btn-primary" [disabled]="!userForm.valid">Sign Up</button>
-     <!--  <button class="btn btn-primary" [routerLink]="['/user-login']" >Already a User?</button> -->
-      <button class="btn btn-primary" (click)="this.createComponent.emit('LoginComponent')" >Already a User?</button>
+      <button type="submit" class="prim" [disabled]="!userForm.valid">Sign Up</button>
+      　　
+      <!--  <button class="btn btn-primary" [routerLink]="['/user-login']" >Already a User?</button> -->
+      <button class="prim" (click)="this.createComponent.emit('LoginComponent')" >Already a User?</button>
     </form>
-  </div>
 </div>
