@@ -51,7 +51,8 @@ export class UserRegisterComponent implements OnInit {
     // users
     this.firebaseService.emailSignUp(this.userForm.value['firstname'], this.userForm.value['lastname'], this.userForm.value['email'], this.userForm.value['password']);
     // this.router.navigate(['/user-login']);
-    this.createComponent.emit('LoginComponent');
+    this.firebaseService.emailLogin(this.userForm.value['email'], this.userForm.value['password'])
+    .then(() => this.afterSignIn());
     return;
   }
 
@@ -95,6 +96,11 @@ export class UserRegisterComponent implements OnInit {
         }
       }
     }
+  }
+
+  private afterSignIn() {
+    this.createComponent.emit('HomeComponent');
+    return;
   }
 
 }
