@@ -16,9 +16,25 @@
 <hr>
 <div id="events">
 
+<<<<<<< HEAD
   <div *ngIf="events?.length > 0" class="container">
     <div *ngFor="let event of events | filter:term" class="collection">
       <div class="card mb-4">
+=======
+    <div *ngIf="events?.length > 0" class="container">
+      <div *ngFor="let event of events | filter:term" class="collection">
+          <div class="card mb-4">
+            <br>
+            <h2>{{event.name}}</h2>
+            <br>
+            <table>
+              <tr>
+              <button class="upvote" (click)="likeUpdate(event)">🌟</button>　{{event.like}}
+              　　
+              <button class="downvote" (click)="dislikeUpdate(event)">💥</button>　{{event.dislike}}
+              </tr>
+              </table>
+>>>>>>> 41284149125e90529a02c26395121aa19ff4959b
         <br>
         <h2>{{event.name}}</h2>
         <br>
