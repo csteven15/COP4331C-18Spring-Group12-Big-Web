@@ -24,11 +24,9 @@
             <br>
             <table>
               <tr>
-              <button class="up" (click)="likeUpdate(event)">🌟</button>
-               {{event.like}}
+              <button class="upvote" (click)="likeUpdate(event)">🌟</button>　{{event.like}}
               　　
-              <button class="down" (click)="dislikeUpdate(event)">💥</button>
-               {{event.dislike}}
+              <button class="downvote" (click)="dislikeUpdate(event)">💥</button>　{{event.dislike}}
               </tr>
               </table>
         <br>
