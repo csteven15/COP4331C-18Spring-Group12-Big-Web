@@ -39,7 +39,17 @@ export class UserProfileComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.user = this.firebaseService.getUser().subscribe(user => {
       this.user = user;
+      const userEvents = [];
+      for (let i = 0; i < this.events.length; i++) {
+        if (this.events[i].uid === this.user.uid) {
+            userEvents.push(this.events[i]);
+          }
+      }
+      this.events = userEvents;
+
     });
+
+
 
     // this.user = this.firebaseService.getUser().subscribe(user => {
     //   this.user = user;
