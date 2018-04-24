@@ -32,7 +32,7 @@ export class UserRegisterComponent implements OnInit {
     'password': {
       'required': 'Password is required.',
       'pattern': 'Password must be include at one letter and one number.',
-      'minlength': 'Password must be at least 4 characters long.',
+      'minlength': 'Password must be at least 6 characters long.',
       'maxlength': 'Password cannot be more than 40 characters long.',
     },
   };
@@ -50,8 +50,9 @@ export class UserRegisterComponent implements OnInit {
   registerUser() {
     // users
     this.firebaseService.emailSignUp(this.userForm.value['firstname'], this.userForm.value['lastname'], this.userForm.value['email'], this.userForm.value['password']);
-    //this.router.navigate(['/user-login']);
-    this.createComponent.emit('LoginComponent');
+    // this.router.navigate(['/user-login']);
+    this.firebaseService.emailLogin(this.userForm.value['email'], this.userForm.value['password'])
+    .then(() => this.afterSignIn());
     return;
   }
 
@@ -95,6 +96,11 @@ export class UserRegisterComponent implements OnInit {
         }
       }
     }
+  }
+
+  private afterSignIn() {
+    this.createComponent.emit('HomeComponent');
+    return;
   }
 
 }

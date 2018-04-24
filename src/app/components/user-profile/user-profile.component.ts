@@ -9,27 +9,24 @@ import { HttpClientModule } from '@angular/common/http';
 import { HttpModule } from '@angular/http';
 import { ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.css']
 })
-export class UserProfileComponent implements OnInit, OnChanges
-{
+export class UserProfileComponent implements OnInit, OnChanges {
   @Input() events: Event[];
   @Output() onEventsChange = new EventEmitter<Event[]>();
 
   event: Event = {
     name: '',
-    description: '',
     longitude: 0,
     latitude: 0,
     like: 0,
     dislike:0
   }
-
-  eventForm: FormGroup;
 
   user: any;
 
@@ -40,11 +37,19 @@ export class UserProfileComponent implements OnInit, OnChanges
   ) { }
 
   ngOnInit() {
-    this.buildForm();
-
     this.user = this.firebaseService.getUser().subscribe(user => {
       this.user = user;
+      const userEvents = [];
+      for (let i = 0; i < this.events.length; i++) {
+        if (this.events[i].uid === this.user.uid) {
+            userEvents.push(this.events[i]);
+          }
+      }
+      this.events = userEvents;
+
     });
+
+
 
     // this.user = this.firebaseService.getUser().subscribe(user => {
     //   this.user = user;
@@ -60,20 +65,17 @@ export class UserProfileComponent implements OnInit, OnChanges
     // });
   }
 
-  ngOnChanges(changes: SimpleChanges)
-  {
-    console.log("Profile ngOnChanges called");
-    var updatedEvents = changes["events"].currentValue;
+  ngOnChanges(changes: SimpleChanges) {
+    console.log('Profile ngOnChanges called');
+    const updatedEvents = changes["events"].currentValue;
     // if(this.events == updatedEvents || updatedEvents == null) { return; }
     this.events = updatedEvents;
     console.log("Profile events after ngOnChanges: ");
     console.log(this.events);
 
-    var userEvents = []
-    for (var i = 0; i < this.events.length; i++)
-    {
-      if (this.events[i].uid == this.user.uid)
-        {
+    const userEvents = [];
+    for (let i = 0; i < this.events.length; i++) {
+      if (this.events[i].uid === this.user.uid) {
           userEvents.push(this.events[i]);
         }
     }
@@ -98,135 +100,84 @@ export class UserProfileComponent implements OnInit, OnChanges
     // return;
   }
 
-  registerEvent() {
-    // users
-    const data: Event = {
-      uid: this.user.uid,
-      name: this.eventForm.value['name'],
-      description: this.eventForm.value['description'],
-      longitude: this.eventForm.value['longitude'],
-      latitude: this.eventForm.value['latitude'],
-      like: 0,
-      dislike: 0
-    };
-    this.firebaseService.addEvent(data);
-
-    // emit event changes
-    this.firebaseService.getEvents().subscribe(events => {
-      this.events = events;
-      this.onEventsChange.emit(this.events);
-      console.log("Profile events after register: ");
-      console.log(this.events);
-    });
-  }
-
-  /*testingEID(event: Event) {
-
-    this.user.likes[0] = "0000";
-    this.user.likes[1] = "0001";
-    this.user.likes[2] = "0002";
-    this.user.likes[3] = "0003";
-    this.user.likes[4] = "0004";
-    this.user.likes[5] = "0005";
-    this.user.likes[6] = "0006";
-    this.user.likes[7] = "0007";
-    this.user.likes[8] = "0008";
-    this.user.likes[9] = "0009";
-    this.user.likes[10] = "0010";
-    this.user.dislikes[0] = "0000";
-    this.user.dislikes[1] = "0001";
-    this.user.dislikes[2] = "0002";
-    this.user.dislikes[3] = "0003";
-    this.user.dislikes[4] = "0004";
-    this.user.dislikes[5] = "0005";
-    this.user.dislikes[6] = "0006";
-    this.user.dislikes[7] = "0007";
-    this.user.dislikes[8] = "0008";
-    this.user.dislikes[9] = "0009";
-    this.user.dislikes[10] = "0010";
-    this.firebaseService.updateUser(this.user);
-  }
-  */
-
-  removeLikesEID(index) {
-    this.user.likes.splice(index, 1);
-    //this.firebaseService.updateUser(this.user);
-  }
-
-  removeDislikesEID(index) {
-    this.user.dislikes.splice(index, 1);
-    //this.firebaseService.updateUser(this.user);
-  }
 
   likeUpdate(event: Event) {
 
-    var likelen = this.user.likes.length;
-    var dislikelen = this.user.dislikes.length;
+    const likelen = event.userlikelist.length;
+    const dislikelen = event.userdislikelist.length;
+    let len;
 
-    if(likelen > dislikelen)
-      var len = likelen;
-    else
-      var len = dislikelen
+    if (likelen > dislikelen) {
+      len = likelen;
+    } else {
+      len = dislikelen;
+    }
 
-    for(var i = 0; i < len; i++)
-    {
-      if(this.user.likes[i] == event.eid)
+    for (let i = 0; i < len; i++) {
+      if (event.userlikelist[i] === this.user.uid) {
           return;
-      else if(this.user.dislikes[i] == event.eid)
-      {
+      } else if (event.userdislikelist[i] === this.user.uid) {
           event.dislike--;
-          this.removeDislikesEID(i);
+          event.userdislikelist.splice(i, 1);
       }
     }
 
-    this.user.likes[likelen] = event.eid;
+    event.userlikelist[likelen] = this.user.uid;
     event.like++;
 
-    this.firebaseService.updateEvent(event);
-    this.firebaseService.updateUser(this.user);
-  }
 
+    const total = event.like + event.dislike;
+    const likePercentToShow = event.like / total * 100;
+    const dislikePercentToShow = event.dislike / total * 100;
+    event.likePercent = Math.round(likePercentToShow);
+    event.dislikePercent = Math.round(dislikePercentToShow);
+
+    this.firebaseService.updateEvent(event);
+  }
 
   dislikeUpdate(event: Event) {
 
-    var likelen = this.user.likes.length;
-    var dislikelen = this.user.dislikes.length;
+    const likelen = event.userlikelist.length;
+    const dislikelen = event.userdislikelist.length;
+    let len;
+    if (likelen > dislikelen) {
+      len = likelen;
+    } else {
+      len = dislikelen;
+    }
 
-    if(likelen > dislikelen)
-      var len = likelen;
-    else
-      var len = dislikelen
-
-    for(var i = 0; i < len; i++)
-    {
-      if(this.user.dislikes[i] == event.eid)
+    for (let i = 0; i < len; i++) {
+      if (event.userdislikelist[i] === this.user.uid) {
           return;
-      else if(this.user.likes[i] == event.eid)
-      {
-        event.like--;
-        this.removeLikesEID(i);
+      } else if (event.userlikelist[i] === this.user.uid) {
+          event.like--;
+          event.userlikelist.splice(i, 1);
       }
     }
 
-    this.user.dislikes[dislikelen] = event.eid;
+    event.userdislikelist[dislikelen] = this.user.uid;
     event.dislike++;
 
+    const total = event.like + event.dislike;
+    const likePercentToShow = event.like / total * 100;
+    const dislikePercentToShow = event.dislike / total * 100;
+    event.likePercent = Math.round(likePercentToShow);
+    event.dislikePercent = Math.round(dislikePercentToShow);
+
     this.firebaseService.updateEvent(event);
-    this.firebaseService.updateUser(this.user);
 
-    if(event.dislike - event.like >= 10)
+    if (event.dislike - event.like >= 10) {
       this.firebaseService.deleteEvent(event);
+    }
+
+  }
+
+  deleteEvent(event: Event) {
+    this.firebaseService.deleteEvent(event);
+    const index = this.events.indexOf(event);
+    this.events.splice(index, 1);
+    this.onEventsChange.emit(this.events);
   }
 
 
-  buildForm() {
-    this.eventForm = this.fb.group({
-      'name': ['', []],
-      'description': ['', []],
-      'longitude': ['', []],
-      'latitude': ['', []],
-      'like': ['', []],
-      'dislike': ['', []]
-    });
-  }
 }

@@ -38,17 +38,6 @@ export class FirebaseService {
         }
       });
 
-      // this.eventsCollection = this.afs.collection('events');
-      //
-      // this.events = this.eventsCollection.snapshotChanges().map(changes => {
-      //   return changes.map(a => {
-      //     const data = a.payload.doc.data() as Event;
-      //     data.eid = a.payload.doc.id;
-      //     return data;
-      //   });
-      // });
-
-
     this.eventsCollection = this.afs.collection('events');
 
     this.events = this.eventsCollection.snapshotChanges().map(changes => {
@@ -114,8 +103,6 @@ export class FirebaseService {
     .then((user) => {
       user.firstname = firstname;
       user.lastname = lastname;
-      user.likes = [];
-      user.dislikes = [];
       this.notify.update('Welcome to Firestarter!!!', 'success');
       return this.updateUserData(user); // if using firestore
     })
@@ -125,7 +112,7 @@ export class FirebaseService {
   emailLogin(email: string, password: string) {
     return this.afAuth.auth.signInWithEmailAndPassword(email, password)
       .then((user) => {
-        this.notify.update('Welcome to Firestarter!!!', 'success')
+        this.notify.update('Welcome to Firestarter!!!', 'success');
         return this.updateUserData(user); // if using firestore
       })
       .catch((error) => this.handleError(error) );
@@ -156,25 +143,17 @@ export class FirebaseService {
   private updateUserData(user: User) {
 
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
-    if (user.firstname == '') {
+    if (user.firstname === '') {
       user.firstname = 'N/A';
     }
-    if (user.lastname == '') {
+    if (user.lastname === '') {
       user.lastname = 'N/A';
-    }
-    if(user.likes == null) {
-      user.likes = [];
-    }
-    if(user.dislikes == null) {
-      user.dislikes = [];
     }
     const data: User = {
       uid: user.uid,
       firstname: user.firstname,
       lastname: user.lastname,
-      email: user.email || null,
-      likes: user.likes || null,
-      dislikes: user.dislikes || null
+      email: user.email || null
     };
     return userRef.set(data);
   }
@@ -184,26 +163,26 @@ export class FirebaseService {
     return this.user;
   }
 
-  getEvents(){
+  getEvents() {
     return this.events;
   }
 
-  addEvent(event: Event){
+  addEvent(event: Event) {
     this.eventsCollection.add(event);
   }
 
-  deleteEvent(event: Event){
+  deleteEvent(event: Event) {
     this.eventDocument = this.afs.doc(`events/${event.eid}`);
     this.eventDocument.delete();
   }
 
-  updateEvent(event: Event){
+  updateEvent(event: Event) {
     this.eventDocument = this.afs.doc(`events/${event.eid}`);
     this.eventDocument.update(event);
   }
 
 
-  updateUser(user: User){
+  updateUser(user: User) {
 
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
     return userRef.update(user);

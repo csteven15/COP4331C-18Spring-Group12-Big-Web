@@ -29,7 +29,6 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
     eid: '',
     uid: '',
     name: '',
-    description: '',
     longitude: 0,
     latitude: 0,
     like: 0,
@@ -88,8 +87,7 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
         // console.log(this.events[i])
         var lng = this.events[i].longitude;
         var lat = this.events[i].latitude;
-        var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p><p class="wordwrap">' + this.events[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
-
+        var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p></div>'
         var marker = new L.marker({ lng, lat })
           .bindPopup(popupContent, { maxWidth: 250 })
           .addTo(this.map);
@@ -107,12 +105,12 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
     var mymap = L.map('mapid', {
       center: UCFcoords,
       zoom: 16,
-      //  minZoom: 16,
-      //  maxBounds: bounds
+      minZoom: 16,
+      maxBounds: bounds
     });
     this.map = mymap;
 
-    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoibm90YWthbmUiLCJhIjoiY2plNHdqeXphMnBjbzJ4bW9kNDJxZHk2eSJ9.pViraf7NrFYgzmnqTd_vgQ', {
+    L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1Ijoibm90YWthbmUiLCJhIjoiY2plNHdqeXphMnBjbzJ4bW9kNDJxZHk2eSJ9.pViraf7NrFYgzmnqTd_vgQ', {
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
     }).addTo(mymap);
 
@@ -145,16 +143,11 @@ export class MapsComponent implements OnInit, OnChanges, AfterContentInit {
         // console.log(this.events[i])
         var lng = this.events[i].longitude;
         var lat = this.events[i].latitude;
-        var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p><p class="wordwrap">' + this.events[i].description + '</p><button class="like-button" class="btn btn-primary">Like</button></div>'
+        var popupContent = '<div><p class="wordwrap"><strong>' + this.events[i].name + '</strong></p></div>'
 
         var marker = new L.marker({ lng, lat })
           .bindPopup(popupContent, { maxWidth: 250 })
           .addTo(this.map);
-        // var likeButton = this.elementRef.nativeElement.querySelector(".like-button");
-        // if(likeButton != null)
-        // {
-        //   likeButton.addEventListener('click', this.like())
-        // }
       }
       return;
     }
